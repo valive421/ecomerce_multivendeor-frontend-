@@ -1,17 +1,19 @@
 import React from "react";
-import logo from '../logo.svg'; // Update the path if logo.svg is in src folder
-// Make sure productDetails, categoryNames, sellers are imported or defined above
+import { Link } from 'react-router-dom';
+import logo from '../logo.svg';
+import SingleProduct from './SingleProduct';
+
 const categoryNames = ['Electronics', 'Fashion', 'Home & Living', 'Sports'];
 
 const productDetails = [
-  { name: 'Wireless Headphones', category: 'Electronics', rating: 4.7, bought: 1200 },
-  { name: 'Smart Watch', category: 'Electronics', rating: 4.5, bought: 950 },
-  { name: 'Bluetooth Speaker', category: 'Electronics', rating: 4.6, bought: 800 },
-  { name: 'Fitness Tracker', category: 'Sports', rating: 4.4, bought: 700 },
-  { name: 'VR Headset', category: 'Electronics', rating: 4.8, bought: 500 },
-  { name: 'Portable SSD', category: 'Electronics', rating: 4.7, bought: 650 },
-  { name: 'Gaming Mouse', category: 'Electronics', rating: 4.5, bought: 900 },
-  { name: 'Action Camera', category: 'Sports', rating: 4.6, bought: 400 },
+  { name: 'Wireless Headphones', category: 'Electronics', rating: 4.7, bought: 1200, price: 49.99, logo },
+  { name: 'Smart Watch', category: 'Electronics', rating: 4.5, bought: 950, price: 59.99, logo },
+  { name: 'Bluetooth Speaker', category: 'Electronics', rating: 4.6, bought: 800, price: 69.99, logo },
+  { name: 'Fitness Tracker', category: 'Sports', rating: 4.4, bought: 700, price: 79.99, logo },
+  { name: 'VR Headset', category: 'Electronics', rating: 4.8, bought: 500, price: 89.99, logo },
+  { name: 'Portable SSD', category: 'Electronics', rating: 4.7, bought: 650, price: 99.99, logo },
+  { name: 'Gaming Mouse', category: 'Electronics', rating: 4.5, bought: 900, price: 109.99, logo },
+  { name: 'Action Camera', category: 'Sports', rating: 4.6, bought: 400, price: 119.99, logo },
 ];
 
 const sellers = [
@@ -20,6 +22,7 @@ const sellers = [
   { name: 'FashionFiesta', rating: 4.7, totalSales: 2100 },
   { name: 'HomeEssence', rating: 4.6, totalSales: 1800 },
 ];
+
 function Home() {
   return (
     <main className="py-5 bg-dark text-light">
@@ -27,38 +30,23 @@ function Home() {
         {/* Latest Products */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h3 className="fw-bold">Latest Products</h3>
-          <a href="#" className="btn btn-outline-light btn-sm rounded-pill">
+          <Link to="/products" className="btn btn-outline-light btn-sm rounded-pill">
             View All <i className="fa-solid fa-arrow-right-long ms-1"></i>
-          </a>
+          </Link>
         </div>
         <div className="row g-4">
           {productDetails.map((prod, i) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={i}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
-                <img src={logo} className="card-img-top p-3 rounded-4" alt="Product" />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">{prod.name}</h5>
-                  <a href="#" className="card-link d-block mb-1 text-decoration-underline text-light small">{prod.category}</a>
-                  <div className="mb-2">
-                    {[...Array(5)].map((_, star) => (
-                      <i key={star} className={star < Math.round(prod.rating) ? "fa-solid fa-star text-warning" : "fa-regular fa-star text-warning"}></i>
-                    ))}
-                    <span className="ms-1 text-light small">{prod.rating}</span>
-                  </div>
-                  <p className="card-text">Price: ${(49 + i * 10).toFixed(2)}</p>
-                  <p className="card-text"><i className="fa-solid fa-user-check me-1"></i>Bought: {prod.bought}</p>
-                  <a href="#" className="btn btn-light w-100">Shop Now</a>
-                </div>
-              </div>
+              <SingleProduct product={prod} />
             </div>
           ))}
         </div>
         {/* Popular Categories */}
         <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
           <h3 className="fw-bold">Popular Categories</h3>
-          <a href="#" className="btn btn-outline-light btn-sm rounded-pill">
+          <Link to="/categories" className="btn btn-outline-light btn-sm rounded-pill">
             All Categories <i className="fa-solid fa-arrow-right-long ms-1"></i>
-          </a>
+          </Link>
         </div>
         <div className="row g-4">
           {categoryNames.map((name, i) => (
@@ -67,8 +55,7 @@ function Home() {
                 <img src={logo} className="card-img-top p-3 rounded-4" alt="Category" />
                 <div className="card-body">
                   <h5 className="card-title fw-bold">{name}</h5>
-                  <p className="card-text">Explore products</p>
-                  <button className="btn btn-light w-100 rounded-pill">View Category</button>
+                  <Link to={`/categories/${name}/${2}`} className="btn btn-light w-100 rounded-pill">View Category</Link>
                 </div>
               </div>
             </div>
@@ -104,22 +91,7 @@ function Home() {
         <div className="row g-4">
           {productDetails.slice(0, 4).map((prod, i) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={i}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
-                <img src={logo} className="card-img-top p-3 rounded-4" alt="Product" />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">{prod.name}</h5>
-                  <a href="#" className="card-link d-block mb-1 text-decoration-underline text-light small">{prod.category}</a>
-                  <div className="mb-2">
-                    {[...Array(5)].map((_, star) => (
-                      <i key={star} className={star < Math.round(prod.rating) ? "fa-solid fa-star text-warning" : "fa-regular fa-star text-warning"}></i>
-                    ))}
-                    <span className="ms-1 text-light small">{prod.rating}</span>
-                  </div>
-                  <p className="card-text">Price: ${(59 + i * 10).toFixed(2)}</p>
-                  <p className="card-text"><i className="fa-solid fa-user-check me-1"></i>Bought: {prod.bought}</p>
-                  <a href="#" className="btn btn-light w-100">Shop Now</a>
-                </div>
-              </div>
+              <SingleProduct product={prod} />
             </div>
           ))}
         </div>

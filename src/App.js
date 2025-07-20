@@ -5,6 +5,9 @@ import Header from './componenet/Header';
 import Home from './componenet/Home';
 import Footer from './componenet/Footer';
 import Categories from './componenet/categories';
+import Categoryproduct from './componenet/categoryProducts';
+import AllProducts from './componenet/AllProducts';
+import ProductDetail from './componenet/ProductDetail';
 function App() {
   return (
     <>
@@ -25,6 +28,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/:category_slug/:categoryid" element={<Categoryproduct />} />
+        <Route path="/products" element={<AllProducts />} />
+        <Route path="/products/:productId" element={<ProductDetail />} />
       </Routes>
 
       <Footer />
