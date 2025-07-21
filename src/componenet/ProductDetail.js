@@ -1,33 +1,95 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import SingleProduct from "./SingleProduct";
 import logo from "../logo.svg";
 
-const productDetails = [
-  { id: 1, name: 'Wireless Headphones', category: 'Electronics', rating: 4.7, bought: 1200, price: 49.99, logo },
-  { id: 2, name: 'Smart Watch', category: 'Electronics', rating: 4.5, bought: 950, price: 59.99, logo },
-  { id: 3, name: 'Bluetooth Speaker', category: 'Electronics', rating: 4.6, bought: 800, price: 69.99, logo },
-  { id: 4, name: 'Fitness Tracker', category: 'Sports', rating: 4.4, bought: 700, price: 79.99, logo },
-  { id: 5, name: 'VR Headset', category: 'Electronics', rating: 4.8, bought: 500, price: 89.99, logo },
-  { id: 6, name: 'Portable SSD', category: 'Electronics', rating: 4.7, bought: 650, price: 99.99, logo },
-  { id: 7, name: 'Gaming Mouse', category: 'Electronics', rating: 4.5, bought: 900, price: 109.99, logo },
-  { id: 8, name: 'Action Camera', category: 'Sports', rating: 4.6, bought: 400, price: 119.99, logo },
-];
-
 function ProductDetail() {
-  const { productId } = useParams();
-  const product = productDetails.find((p) => p.id === Number(productId));
+  const { product_slug, product_id } = useParams();
+  const [inCart, setInCart] = useState(false);
+  const [inWishlist, setInWishlist] = useState(false);
+
+  const product = {
+    id: product_id,
+    slug: product_slug,
+    name: `Demo Product ${product_id}`,
+    category: "Demo Category",
+    seller: "Demo Seller",
+    rating: 4.5,
+    reviews: 44,
+    bought: 900,
+    price: 109.99,
+    logo,
+    image: "https://via.placeholder.com/400x300?text=Demo+Product",
+    description: "This is a demo product description. Replace with real data later."
+  };
 
   return (
     <div className="container py-5">
-      <h1 className="mb-4">Product Detail</h1>
-      {product ? (
-        <SingleProduct product={product} />
-      ) : (
-        <p>Product not found.</p>
-      )}
+      <div className="row g-4">
+        <div className="col-md-5">
+          <img
+            src={product.image || product.logo}
+            alt={product.name}
+            className="img-fluid rounded shadow"
+            style={{ background: "#fff", width: "100%" }}
+          />
+        </div>
+        <div className="col-md-7">
+          <h2 className="fw-bold mb-2">{product.name}</h2>
+          <div className="mb-2">
+            <span className="badge bg-primary me-2">{product.category}</span>
+            <span className="badge bg-secondary">Seller: {product.seller}</span>
+          </div>
+          <div className="mb-2">
+            {[...Array(5)].map((_, star) => (
+              <i
+                key={star}
+                className={
+                  star < Math.round(product.rating)
+                    ? "fa-solid fa-star text-warning"
+                    : "fa-regular fa-star text-warning"
+                }
+              ></i>
+            ))}
+            <span className="ms-2">{product.rating} ({product.reviews} reviews)</span>
+          </div>
+          <h3 className="text-success mb-3">${product.price}</h3>
+          <div className="mb-3">
+            <button
+              className={`btn btn-primary me-2 ${inCart ? "disabled" : ""}`}
+              onClick={() => setInCart(true)}
+            >
+              <i className="fa-solid fa-cart-plus me-1"></i>
+              {inCart ? "Added to Cart" : "Add to Cart"}
+            </button>
+            <button
+              className={`btn btn-outline-danger ${inWishlist ? "active" : ""}`}
+              onClick={() => setInWishlist((w) => !w)}
+            >
+              <i className={`fa${inWishlist ? "s" : "r"} fa-heart me-1`}></i>
+              {inWishlist ? "Wishlisted" : "Add to Wishlist"}
+            </button>
+          </div>
+          <p className="mb-2"><strong>Bought:</strong> {product.bought} times</p>
+          <p className="mb-4">{product.description}</p>
+          <hr />
+          <h5>Customer Reviews</h5>
+          <ul className="list-unstyled">
+            <li>
+              <strong>Jane Doe</strong> <span className="text-warning">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <br />
+              <small>Great product! Highly recommend.</small>
+            </li>
+            <li className="mt-2">
+              <strong>John Smith</strong> <span className="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+              <br />
+              <small>Good value for money.</small>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default ProductDetail;
+

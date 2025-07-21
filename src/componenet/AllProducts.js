@@ -1,29 +1,48 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import SingleProduct from "./SingleProduct";
 import logo from "../logo.svg";
 
-const productDetails = [
-  { id: 1, name: 'Wireless Headphones', category: 'Electronics', rating: 4.7, bought: 1200, price: 49.99, logo },
-  { id: 2, name: 'Smart Watch', category: 'Electronics', rating: 4.5, bought: 950, price: 59.99, logo },
-  { id: 3, name: 'Bluetooth Speaker', category: 'Electronics', rating: 4.6, bought: 800, price: 69.99, logo },
-  { id: 4, name: 'Fitness Tracker', category: 'Sports', rating: 4.4, bought: 700, price: 79.99, logo },
-  { id: 5, name: 'VR Headset', category: 'Electronics', rating: 4.8, bought: 500, price: 89.99, logo },
-  { id: 6, name: 'Portable SSD', category: 'Electronics', rating: 4.7, bought: 650, price: 99.99, logo },
-  { id: 7, name: 'Gaming Mouse', category: 'Electronics', rating: 4.5, bought: 900, price: 109.99, logo },
-  { id: 8, name: 'Action Camera', category: 'Sports', rating: 4.6, bought: 400, price: 119.99, logo },
-];
-
 function AllProducts() {
+  const demoProducts = [
+    { id: 1, slug: "demo-product-1", name: "Demo Product 1", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.5, bought: 100, price: 49.99, logo },
+    { id: 2, slug: "demo-product-2", name: "Demo Product 2", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.0, bought: 80, price: 59.99, logo },
+    { id: 3, slug: "demo-product-3", name: "Demo Product 3", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.8, bought: 120, price: 69.99, logo },
+    { id: 4, slug: "demo-product-4", name: "Demo Product 4", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.2, bought: 60, price: 39.99, logo },
+    { id: 5, slug: "demo-product-5", name: "Demo Product 5", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.6, bought: 90, price: 79.99, logo },
+    { id: 6, slug: "demo-product-6", name: "Demo Product 6", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.3, bought: 110, price: 89.99, logo },
+    { id: 7, slug: "demo-product-7", name: "Demo Product 7", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.7, bought: 70, price: 99.99, logo },
+    { id: 8, slug: "demo-product-8", name: "Demo Product 8", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.1, bought: 50, price: 29.99, logo },
+  ];
+
   return (
     <div className="container py-5">
       <h1 className="mb-4">All Products</h1>
       <div className="row g-4">
-        {productDetails.map((prod) => (
+        {demoProducts.map((prod) => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
-            <Link to={`/products/${prod.id}`} style={{ textDecoration: "none" }}>
-              <SingleProduct product={prod} />
-            </Link>
+            <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
+              <img src={prod.logo} className="card-img-top p-3 rounded-4" alt="Product" />
+              <div className="card-body">
+                <h5 className="card-title fw-bold">{prod.name}</h5>
+                <span className="card-link d-block mb-1 text-decoration-underline text-light small">{prod.category}</span>
+                <div className="mb-2">
+                  {[...Array(5)].map((_, star) => (
+                    <i
+                      key={star}
+                      className={
+                        star < Math.round(prod.rating)
+                          ? "fa-solid fa-star text-warning"
+                          : "fa-regular fa-star text-warning"
+                      }
+                    ></i>
+                  ))}
+                  <span className="ms-1 text-light small">{prod.rating}</span>
+                </div>
+                <p className="card-text">Price: ${prod.price}</p>
+                <p className="card-text"><i className="fa-solid fa-user-check me-1"></i>Bought: {prod.bought}</p>
+                <Link to={`/product/${prod.slug}/${prod.id}`} className="btn btn-light w-100">Shop Now</Link>
+              </div>
+            </div>
           </div>
         ))}
       </div>

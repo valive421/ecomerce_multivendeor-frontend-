@@ -8,6 +8,7 @@ import Categories from './componenet/categories';
 import Categoryproduct from './componenet/categoryProducts';
 import AllProducts from './componenet/AllProducts';
 import ProductDetail from './componenet/ProductDetail';
+import ProductDemo from './componenet/ProductDemo';
 function App() {
   return (
     <>
@@ -26,11 +27,11 @@ function App() {
       </section>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/categories/:category_slug/:categoryid" element={<Categoryproduct />} />
-        <Route path="/products" element={<AllProducts />} />
-        <Route path="/products/:productId" element={<ProductDetail />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/products' element={<AllProducts />} />
+        <Route path='/categories' element={<Categories />} />
+        <Route path='/category/:category_slug/:category_id' element={<Categoryproduct />} />
+        <Route path='/product/:product_slug/:product_id' element={<ProductDetail />} />
       </Routes>
 
       <Footer />
