@@ -8,7 +8,7 @@ import Categories from './componenet/categories';
 import Categoryproduct from './componenet/categoryProducts';
 import AllProducts from './componenet/AllProducts';
 import ProductDetail from './componenet/ProductDetail';
-import ProductDemo from './componenet/ProductDemo';
+
 function App() {
   return (
     <>
