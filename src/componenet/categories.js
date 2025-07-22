@@ -20,7 +20,7 @@ function Categories() {
                 <div className="card-body">
                   <h5 className="card-title fw-bold">{name}</h5>
                   <p className="card-text">Explore products</p>
-                   <Link to={`/categories/${name}/${i}`} className="btn btn-light w-100 rounded-pill">View Category</Link>
+                  <Link to={`/category/${name.toLowerCase()}/${i + 1}`} className="btn btn-light w-100 rounded-pill">View Category</Link>
                 </div>
               </div>
             </div>

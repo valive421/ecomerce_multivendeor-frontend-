@@ -9,6 +9,9 @@ import Categoryproduct from './componenet/categoryProducts';
 import AllProducts from './componenet/AllProducts';
 import ProductDetail from './componenet/ProductDetail';
 import Checkout from './componenet/checkout';
+
+//customer panel
+import Orders from './componenet/Orders';
 import Register from './componenet/Register';
 import Login from './componenet/Login';
 import Logout from './componenet/Logout';
@@ -31,6 +34,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/logout' element={<Logout />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/orders' element={<Orders />} />
       </Routes>
 
       <Footer />
