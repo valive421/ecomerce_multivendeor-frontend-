@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../logo.svg";
+import SingleProduct from "./SingleProduct";
 
 function Home() {
   const latestProducts = [
@@ -41,29 +42,7 @@ function Home() {
         <div className="row g-4">
           {latestProducts.map((prod) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
-                <img src={prod.logo} className="card-img-top p-3 rounded-4" alt="Product" />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">{prod.name}</h5>
-                  <span className="card-link d-block mb-1 text-decoration-underline text-light small">{prod.category}</span>
-                  <div className="mb-2">
-                    {[...Array(5)].map((_, star) => (
-                      <i
-                        key={star}
-                        className={
-                          star < Math.round(prod.rating)
-                            ? "fa-solid fa-star text-warning"
-                            : "fa-regular fa-star text-warning"
-                        }
-                      ></i>
-                    ))}
-                    <span className="ms-1 text-light small">{prod.rating}</span>
-                  </div>
-                  <p className="card-text">Price: ${prod.price}</p>
-                  <p className="card-text"><i className="fa-solid fa-user-check me-1"></i>Bought: {prod.bought}</p>
-                  <Link to={`/product/${prod.slug}/${prod.id}`} className="btn btn-light w-100">Shop Now</Link>
-                </div>
-              </div>
+              <SingleProduct product={prod} />
             </div>
           ))}
         </div>
@@ -77,29 +56,7 @@ function Home() {
         <div className="row g-4">
           {popularProducts.map((prod) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
-                <img src={prod.logo} className="card-img-top p-3 rounded-4" alt="Product" />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">{prod.name}</h5>
-                  <span className="card-link d-block mb-1 text-decoration-underline text-light small">{prod.category}</span>
-                  <div className="mb-2">
-                    {[...Array(5)].map((_, star) => (
-                      <i
-                        key={star}
-                        className={
-                          star < Math.round(prod.rating)
-                            ? "fa-solid fa-star text-warning"
-                            : "fa-regular fa-star text-warning"
-                        }
-                      ></i>
-                    ))}
-                    <span className="ms-1 text-light small">{prod.rating}</span>
-                  </div>
-                  <p className="card-text">Price: ${prod.price}</p>
-                  <p className="card-text"><i className="fa-solid fa-user-check me-1"></i>Bought: {prod.bought}</p>
-                  <Link to={`/product/${prod.slug}/${prod.id}`} className="btn btn-light w-100">Shop Now</Link>
-                </div>
-              </div>
+              <SingleProduct product={prod} />
             </div>
           ))}
         </div>
@@ -140,7 +97,10 @@ function Home() {
                 <img src={cat.img} className="card-img-top p-3 rounded-4" alt="Category" />
                 <div className="card-body">
                   <h5 className="card-title fw-bold">{cat.name}</h5>
-                  <Link to={`/category/${cat.name.toLowerCase()}/${i + 1}`} className="btn btn-light w-100 rounded-pill">
+                  <Link
+                    to={`/category/${cat.name.toLowerCase()}/${i + 1}`}
+                    className="btn btn-light w-100 rounded-pill"
+                  >
                     View Category
                   </Link>
                 </div>

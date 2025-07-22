@@ -12,8 +12,9 @@ function SingleProduct({ product }) {
         src={product.image || product.logo}
         className="card-img-top p-3 rounded-4"
         alt={product.name}
+        style={{ height: "200px", objectFit: "cover" }}
       />
-      <div className="card-body">
+      <div className="card-body d-flex flex-column">
         <h5 className="card-title fw-bold">{product.name}</h5>
         {product.category && (
           <span className="card-link d-block mb-1 text-decoration-underline text-light small">
@@ -42,8 +43,8 @@ function SingleProduct({ product }) {
           </p>
         )}
         <Link
-          to={`/products/${product.id}`}
-          className="btn btn-light w-100"
+          to={`/product/${product.slug}/${product.id}`}
+          className="btn btn-light w-100 mt-auto"
         >
           Shop Now
         </Link>
