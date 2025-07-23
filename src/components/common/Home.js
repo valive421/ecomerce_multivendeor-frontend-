@@ -2,14 +2,32 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../../logo.svg"; // fixed path
 import SingleProduct from "./SingleProduct";
+import { useEffect, useState } from "react";
 
 function Home() {
-  const latestProducts = [
-    { id: 1, slug: "latest-product-1", name: "Latest Product 1", category: "Electronics", category_slug: "electronics", category_id: 1, rating: 4.7, bought: 120, price: 99.99, logo },
-    { id: 2, slug: "latest-product-2", name: "Latest Product 2", category: "Fashion", category_slug: "fashion", category_id: 2, rating: 4.5, bought: 80, price: 59.99, logo },
-    { id: 3, slug: "latest-product-3", name: "Latest Product 3", category: "Sports", category_slug: "sports", category_id: 3, rating: 4.8, bought: 60, price: 79.99, logo },
-    { id: 4, slug: "latest-product-4", name: "Latest Product 4", category: "Home", category_slug: "home", category_id: 4, rating: 4.2, bought: 40, price: 39.99, logo },
-  ];
+
+  const [latestProducts, setProducts] = useState([]);
+useEffect(() => {
+  fetch("http://127.0.0.1:8000/api/products/")
+    .then(res => res.json())
+    .then(data => {
+      // Map API data to expected format for SingleProduct
+      const mapped = data.data.map(item => ({
+        id: item.id,
+        name: item.title, // or item.name if available
+        price: item.price || 0, // default if missing
+        logo: logo, // or item.image if available
+        // Flatten nested objects to avoid React child errors
+        category: item.category?.title || "", // extract category title
+        category_id: item.category?.id || null,
+        vendor: item.vendor?.id || null,
+        detail: item.detail || "",
+        // ...add other fields as needed, but avoid passing objects
+      }));
+      setProducts(mapped);
+    });
+}, []);
+  console.log(latestProducts);
   const popularProducts = [
     { id: 5, slug: "popular-product-1", name: "Popular Product 1", category: "Electronics", category_slug: "electronics", category_id: 1, rating: 4.9, bought: 200, price: 149.99, logo },
     { id: 6, slug: "popular-product-2", name: "Popular Product 2", category: "Fashion", category_slug: "fashion", category_id: 2, rating: 4.8, bought: 180, price: 89.99, logo },
