@@ -3,13 +3,18 @@ import { Link } from "react-router-dom";
 
 function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [sellerDropdownOpen, setSellerDropdownOpen] = useState(false);
   const dropdownRef = useRef();
+  const sellerDropdownRef = useRef();
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
+      }
+      if (sellerDropdownRef.current && !sellerDropdownRef.current.contains(event.target)) {
+        setSellerDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -43,6 +48,7 @@ function Header() {
             <li className="nav-item">
               <Link className="nav-link text-light" to="/checkout">My cart</Link>
             </li>
+            {/* Customer My Account Dropdown */}
             <li className="nav-item" ref={dropdownRef} style={{ position: "relative" }}>
               <button
                 className="nav-link text-light btn btn-link border-0"
@@ -88,6 +94,57 @@ function Header() {
                   <li>
                     <Link className="dropdown-item" to="/logout" onClick={() => setDropdownOpen(false)}>
                       Logout
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+            {/* Seller Panel Dropdown */}
+            <li className="nav-item" ref={sellerDropdownRef} style={{ position: "relative" }}>
+              <button
+                className="nav-link text-light btn btn-link border-0"
+                style={{ textDecoration: "none" }}
+                type="button"
+                onClick={() => setSellerDropdownOpen((open) => !open)}
+              >
+                Seller Panel <span style={{ fontSize: "0.8em" }}>▼</span>
+              </button>
+              {sellerDropdownOpen && (
+                <ul
+                  className="dropdown-menu show"
+                  style={{
+                    display: "block",
+                    position: "absolute",
+                    right: 0,
+                    top: "100%",
+                    minWidth: 180,
+                    background: "#fff",
+                    color: "#222",
+                    borderRadius: 8,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    zIndex: 1000,
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  <li>
+                    <Link className="dropdown-item" to="/seller/login" onClick={() => setSellerDropdownOpen(false)}>
+                      Seller Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/seller/register" onClick={() => setSellerDropdownOpen(false)}>
+                      Seller Register
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/seller/dashboard" onClick={() => setSellerDropdownOpen(false)}>
+                      Seller Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/seller/logout" onClick={() => setSellerDropdownOpen(false)}>
+                      Seller Logout
                     </Link>
                   </li>
                 </ul>
