@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Sidebar from "./Sidebar"; // Assuming you have a Sidebar component
+import Sidebar from "../common/Sidebar";
 
 function Orders() {
   // Demo orders data

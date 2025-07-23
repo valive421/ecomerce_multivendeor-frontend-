@@ -1,4 +1,5 @@
-import logo from '../logo.svg'; // Update the path if logo.svg is in src folder
+import React from "react";
+import logo from '../../logo.svg'; // fixed path
 import { Link } from 'react-router-dom';
 
 // Make sure productDetails, categoryNames, sellers are imported or defined above

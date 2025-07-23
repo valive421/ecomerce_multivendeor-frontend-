@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import logo from "../logo.svg";
-import SingleProduct from "./SingleProduct";
+import { useParams } from "react-router-dom";
+import logo from "../../logo.svg";
+import SingleProduct from "../common/SingleProduct";
 
 function ProductDetail() {
   const { product_slug, product_id } = useParams();

@@ -1,7 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import SingleProduct from "./SingleProduct";
-import logo from "../logo.svg";
+import SingleProduct from "../common/SingleProduct";
+import logo from "../../logo.svg"; // fixed path
 
 function AllProducts() {
   const demoProducts = [
@@ -30,3 +29,4 @@ function AllProducts() {
 }
 
 export default AllProducts;
+

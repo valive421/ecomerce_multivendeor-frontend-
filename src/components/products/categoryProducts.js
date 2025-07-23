@@ -1,6 +1,7 @@
+import React from "react";
 import { useParams, Link } from 'react-router-dom';
-import logo from '../logo.svg';
-import SingleProduct from './SingleProduct';
+import SingleProduct from '../common/SingleProduct';
+import logo from '../../logo.svg'; // fixed path
 
 function CategoryProducts() {
   const { category_slug } = useParams();
