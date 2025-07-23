@@ -1,28 +1,96 @@
 import React from "react";
 import SingleProduct from "../common/SingleProduct";
 import logo from "../../logo.svg"; // fixed path
+import { useEffect, useState } from "react";
 
 function AllProducts() {
-  const demoProducts = [
-    { id: 1, slug: "demo-product-1", name: "Demo Product 1", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.5, bought: 100, price: 49.99, logo },
-    { id: 2, slug: "demo-product-2", name: "Demo Product 2", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.0, bought: 80, price: 59.99, logo },
-    { id: 3, slug: "demo-product-3", name: "Demo Product 3", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.8, bought: 120, price: 69.99, logo },
-    { id: 4, slug: "demo-product-4", name: "Demo Product 4", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.2, bought: 60, price: 39.99, logo },
-    { id: 5, slug: "demo-product-5", name: "Demo Product 5", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.6, bought: 90, price: 79.99, logo },
-    { id: 6, slug: "demo-product-6", name: "Demo Product 6", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.3, bought: 110, price: 89.99, logo },
-    { id: 7, slug: "demo-product-7", name: "Demo Product 7", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.7, bought: 70, price: 99.99, logo },
-    { id: 8, slug: "demo-product-8", name: "Demo Product 8", category: "Demo", category_slug: "demo", category_id: 1, rating: 4.1, bought: 50, price: 29.99, logo },
-  ];
+  const [AllProducts, setProducts] = useState([]);
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [pageSize, setPageSize] = useState(10); // default, will auto-detect
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchProducts = (url = "http://127.0.0.1:8000/api/products/", page = 1) => {
+    setLoading(true);
+    // If url is the base, add ?page=page
+    let fetchUrl = url;
+    if (url === "http://127.0.0.1:8000/api/products/") {
+      fetchUrl = `${url}?page=${page}`;
+    }
+    fetch(fetchUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = data.data.map((item) => ({
+          id: item.id,
+          name: item.title,
+          price: item.price || 0,
+          logo: logo,
+          category: item.category?.title || "",
+          category_id: item.category?.id || null,
+          vendor: item.vendor?.id || null,
+          detail: item.detail || "",
+        }));
+        setProducts(mapped);
+        setNextPage(data.links?.next || null);
+        setPrevPage(data.links?.previous || null);
+        setCount(data.count || 0);
+        // Detect page size from response
+        if (data.data && data.data.length > 0) setPageSize(data.data.length);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchProducts("http://127.0.0.1:8000/api/products/", 1);
+  }, []);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(count / pageSize);
+
+  // Handle page change
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+    fetchProducts("http://127.0.0.1:8000/api/products/", page);
+  };
 
   return (
     <div className="container py-5">
       <h1 className="mb-4">All Products</h1>
       <div className="row g-4">
-        {demoProducts.map((prod) => (
+        {AllProducts.map((prod) => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
             <SingleProduct product={prod} />
           </div>
         ))}
+      </div>
+      {/* Pagination */}
+      <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => handlePageClick(currentPage - 1)}
+          disabled={currentPage === 1 || loading}
+        >
+          Previous
+        </button>
+        {[...Array(totalPages)].map((_, idx) => (
+          <button
+            key={idx + 1}
+            className={`btn ${currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => handlePageClick(idx + 1)}
+            disabled={loading}
+          >
+            {idx + 1}
+          </button>
+        ))}
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => handlePageClick(currentPage + 1)}
+          disabled={currentPage === totalPages || loading}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

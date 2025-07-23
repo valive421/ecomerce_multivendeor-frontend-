@@ -43,7 +43,7 @@ function SingleProduct({ product }) {
           </p>
         )}
         <Link
-          to={`/product/${product.slug}/${product.id}`}
+          to={`/product/${product.name}/${product.id}`}
           className="btn btn-light w-100 mt-auto"
         >
           Shop Now
