@@ -18,6 +18,9 @@ function Sidebar() {
             <li className="list-group-item">
               <Link to="/addresses" className="text-decoration-none text-dark">Addresses</Link>
             </li>
+             <li className="list-group-item">
+              <Link to="/changepassword" className="text-decoration-none text-dark">Change Password</Link>
+            </li>
           </ul>
         </div>
   );

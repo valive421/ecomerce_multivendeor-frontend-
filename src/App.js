@@ -16,6 +16,11 @@ import Register from './componenet/Register';
 import Login from './componenet/Login';
 import Logout from './componenet/Logout';
 import Dashboard from './componenet/Dashboard';
+import Wishlist from './componenet/Wishlist';
+import Profile from './componenet/Profile';
+import ChangePassword from './componenet/ChangePassword';
+import Addresses from './componenet/Addresses';
+
 function App() {
   return (
     <>
@@ -35,8 +40,11 @@ function App() {
         <Route path='/logout' element={<Logout />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/orders' element={<Orders />} />
+        <Route path='/wishlist' element={<Wishlist />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/changepassword' element={<ChangePassword />} />
+        <Route path='/addresses' element={<Addresses />} />
       </Routes>
-
       <Footer />
     </>
   );
