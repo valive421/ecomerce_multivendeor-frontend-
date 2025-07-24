@@ -1,7 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from '../context';
+import { useContext } from "react";
+
 
 function Header() {
+  const userContext = useContext(UserContext);
+  console.log("User Context:", userContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sellerDropdownOpen, setSellerDropdownOpen] = useState(false);
   const dropdownRef = useRef();
@@ -76,26 +81,33 @@ function Header() {
                     margin: 0,
                   }}
                 >
-                  <li>
-                    <Link className="dropdown-item" to="/login" onClick={() => setDropdownOpen(false)}>
-                      Login
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/register" onClick={() => setDropdownOpen(false)}>
-                      Register
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/dashboard" onClick={() => setDropdownOpen(false)}>
-                      Dashboard
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/logout" onClick={() => setDropdownOpen(false)}>
-                      Logout
-                    </Link>
-                  </li>
+                  {userContext ? (
+                    <>
+                      <li>
+                        <Link className="dropdown-item" to="/dashboard" onClick={() => setDropdownOpen(false)}>
+                          Dashboard
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/logout" onClick={() => setDropdownOpen(false)}>
+                          Logout
+                        </Link>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li>
+                        <Link className="dropdown-item" to="/login" onClick={() => setDropdownOpen(false)}>
+                          Login
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/register" onClick={() => setDropdownOpen(false)}>
+                          Register
+                        </Link>
+                      </li>
+                    </>
+                  )}
                 </ul>
               )}
             </li>

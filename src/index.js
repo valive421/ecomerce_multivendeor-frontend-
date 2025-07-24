@@ -6,12 +6,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { UserContext } from './components/context';
+const checkCustomer = localStorage.getItem('customer_login');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <UserContext.Provider value={checkCustomer}>
+        <App />
+      </UserContext.Provider>
     </BrowserRouter>
   </React.StrictMode>
 );
