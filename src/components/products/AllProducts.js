@@ -1,6 +1,5 @@
 import React from "react";
 import SingleProduct from "../common/SingleProduct";
-import logo from "../../logo.svg"; // fixed path
 import { useEffect, useState } from "react";
 
 function AllProducts() {
@@ -26,7 +25,10 @@ function AllProducts() {
           id: item.id,
           name: item.title,
           price: item.price || 0,
-          logo: logo,
+          // Safely use first product image as logo if available, else fallback to null
+          logo: item.product_images && item.product_images.length > 0
+            ? item.product_images[0].image
+            : null,
           category: item.category?.title || "",
           category_id: item.category?.id || null,
           vendor: item.vendor?.id || null,
@@ -95,6 +97,4 @@ function AllProducts() {
     </div>
   );
 }
-
 export default AllProducts;
-

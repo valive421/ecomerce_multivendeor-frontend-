@@ -5,7 +5,7 @@ function SingleProduct({ product }) {
   if (!product) {
     return <div>No product data available.</div>;
   }
-
+console.log(product);
   return (
     <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
       <img
@@ -43,7 +43,7 @@ function SingleProduct({ product }) {
           </p>
         )}
         <Link
-          to={`/product/${product.name}/${product.id}`}
+          to={`/product/${product.id}`}
           className="btn btn-light w-100 mt-auto"
         >
           Shop Now
