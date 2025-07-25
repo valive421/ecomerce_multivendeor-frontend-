@@ -6,10 +6,21 @@ function Checkout() {
   const [cartData, setCartData] = useContext(CartContext);
 
   const cartItems = cartData || [];
-  const total = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  const total = cartItems.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
 
   const handleRemove = (product_id) => {
     const updatedCart = cartItems.filter(item => item.product_id !== product_id);
+    setCartData(updatedCart);
+  };
+
+  const handleQuantityChange = (product_id, delta) => {
+    const updatedCart = cartItems.map(item => {
+      if (item.product_id === product_id) {
+        const newQty = (item.quantity || 1) + delta;
+        return { ...item, quantity: newQty > 1 ? newQty : 1 };
+      }
+      return item;
+    });
     setCartData(updatedCart);
   };
 
@@ -20,8 +31,9 @@ function Checkout() {
         <thead className="table-light">
           <tr>
             <th style={{ width: "5%" }}>#</th>
-            <th style={{ width: "60%" }}>Product</th>
+            <th style={{ width: "40%" }}>Product</th>
             <th style={{ width: "20%" }}>Price</th>
+            <th style={{ width: "20%" }}>Quantity</th>
             <th style={{ width: "15%" }}>Action</th>
           </tr>
         </thead>
@@ -37,6 +49,20 @@ function Checkout() {
               </td>
               <td>Rs. {item.price}</td>
               <td>
+                <div className="d-flex align-items-center gap-2">
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => handleQuantityChange(item.product_id, -1)}
+                    disabled={(item.quantity || 1) <= 1}
+                  >-</button>
+                  <span>{item.quantity || 1}</span>
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => handleQuantityChange(item.product_id, 1)}
+                  >+</button>
+                </div>
+              </td>
+              <td>
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => handleRemove(item.product_id)}
@@ -47,7 +73,7 @@ function Checkout() {
             </tr>
           ))}
           <tr>
-            <td colSpan={3} className="fw-bold text-end">Total</td>
+            <td colSpan={4} className="fw-bold text-end">Total</td>
             <td className="fw-bold">Rs. {total}</td>
           </tr>
         </tbody>
