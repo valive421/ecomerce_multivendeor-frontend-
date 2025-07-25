@@ -1,10 +1,12 @@
 // App.js
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import { CartContext, UserContext } from './components/context';
+import React, { useState, useRef, useEffect } from "react";
 import Header from './components/common/Header';
 import Home from './components/common/Home';
 import Footer from './components/common/Footer';
-
+import ConfirmOrder from './components/user/confirmOrder';
 // Product & Category
 import Categories from './components/products/categories';
 import Categoryproduct from './components/products/categoryProducts';
@@ -36,40 +38,87 @@ import SellerReports from './components/seller/SellerReports';
 import SellerLogout from './components/seller/SellerLogout';
 import SellerAddProduct from './components/seller/SellerAddProduct';
 import Sellerchangepass from './components/seller/ChangePassword';
-
+const checkCart = localStorage.getItem('cart');
 function App() {
+  // User state for authentication
+  const [userContext, setUserContext] = React.useState(() => {
+    try {
+      const stored = localStorage.getItem('userContext');
+      // Always return an object with a login property
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // Add customer_id from localStorage if not present
+        if (typeof parsed === "object" && parsed !== null && "login" in parsed) {
+          if (!parsed.customer_id) {
+            const cid = localStorage.getItem('customer_id');
+            if (cid) parsed.customer_id = parseInt(cid, 10);
+          }
+          return parsed;
+        }
+        return { login: false };
+      }
+      return { login: false };
+    } catch {
+      return { login: false };
+    }
+  });
+
+  // Keep userContext in sync with localStorage
+  React.useEffect(() => {
+    if (userContext && typeof userContext === "object" && "login" in userContext) {
+      localStorage.setItem('userContext', JSON.stringify(userContext));
+    }
+  }, [userContext]);
+
+  const [cartData, setCartData] = useState(() => {
+    try {
+      const parsed = JSON.parse(checkCart);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Keep localStorage in sync with cartData
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartData));
+  }, [cartData]);
+
   return (
-    <>
-      <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/products' element={<AllProducts />} />
-        <Route path='/categories' element={<Categories />} />
-        <Route path='/category/:category_slug/:category_id' element={<Categoryproduct />} />
-        <Route path='/product/:product_id' element={<ProductDetail />} />
-        <Route path='/checkout' element={<Checkout />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/logout' element={<Logout />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/orders' element={<Orders />} />
-        <Route path='/wishlist' element={<Wishlist />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/changepassword' element={<ChangePassword />} />
-        <Route path='/addresses' element={<Addresses />} />
-        <Route path='/seller/login' element={<SellerLogin />} />
-        <Route path='/seller/register' element={<SellerRegister />} />
-        <Route path='/seller/dashboard' element={<SellerDashboard />} />
-        <Route path='/seller/products' element={<SellerProducts />} />
-        <Route path='/seller/orders' element={<SellerOrders />} />
-        <Route path='/seller/customers' element={<SellerCustomers />} />
-        <Route path='/seller/reports' element={<SellerReports />} />
-        <Route path='/seller/logout' element={<SellerLogout />} />
-        <Route path='/seller/products/add' element={<SellerAddProduct />} />
-        <Route path='/seller/changepassword' element={<Sellerchangepass />} />
-      </Routes>
-      <Footer />
-    </>
+    <UserContext.Provider value={{ ...userContext, setUserContext }}>
+      <CartContext.Provider value={[cartData, setCartData]}>
+        <Header />
+        <Routes>
+          <Route path='/confirm-order' element={<ConfirmOrder />} />
+          <Route path='/' element={<Home />} />
+          <Route path='/products' element={<AllProducts />} />
+          <Route path='/categories' element={<Categories />} />
+          <Route path='/category/:category_slug/:category_id' element={<Categoryproduct />} />
+          <Route path='/product/:product_id' element={<ProductDetail />} />
+          <Route path='/checkout' element={<Checkout />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/logout' element={<Logout />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/orders' element={<Orders />} />
+          <Route path='/wishlist' element={<Wishlist />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/changepassword' element={<ChangePassword />} />
+          <Route path='/addresses' element={<Addresses />} />
+          <Route path='/seller/login' element={<SellerLogin />} />
+          <Route path='/seller/register' element={<SellerRegister />} />
+          <Route path='/seller/dashboard' element={<SellerDashboard />} />
+          <Route path='/seller/products' element={<SellerProducts />} />
+          <Route path='/seller/orders' element={<SellerOrders />} />
+          <Route path='/seller/customers' element={<SellerCustomers />} />
+          <Route path='/seller/reports' element={<SellerReports />} />
+          <Route path='/seller/logout' element={<SellerLogout />} />
+          <Route path='/seller/products/add' element={<SellerAddProduct />} />
+          <Route path='/seller/changepassword' element={<Sellerchangepass />} />
+        </Routes>
+        <Footer />
+      </CartContext.Provider>
+    </UserContext.Provider>
   );
 }
 

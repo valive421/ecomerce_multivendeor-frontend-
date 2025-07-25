@@ -1,7 +1,8 @@
-
 import {Link} from 'react-router-dom';
 import axios from "axios";
-import {useState} from "react";
+import {useState, useContext} from "react";
+import { UserContext } from '../context';
+
 function CustomerLogin(props){
     const baseUrl = 'http://127.0.0.1:8000/api/';
     const [formError,setFormError]=useState(false);
@@ -10,6 +11,7 @@ function CustomerLogin(props){
         "username":'',
         "password":''
     });
+    const userContext = useContext(UserContext);
 
     const inputHandler =(event) => {
         setLoginFormData({
@@ -31,6 +33,16 @@ function CustomerLogin(props){
                     seterrorMsg(response.data.user)
                 }else{
                     console.log(response.data);
+                    const userData = { 
+                      login: true, 
+                      id: response.data.id, 
+                      username: response.data.user,
+                      customer_id: response.data.id // Store customer_id in userContext
+                    };
+                    if (userContext && typeof userContext.setUserContext === "function") {
+                      userContext.setUserContext(userData);
+                    }
+                    localStorage.setItem('userContext', JSON.stringify(userData));
                     localStorage.setItem('customer_id',response.data.id);
                     localStorage.setItem('customer_login',true);
                     localStorage.setItem('customer_username',response.data.user);

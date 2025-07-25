@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { UserContext } from '../context';
+import { UserContext, CartContext } from '../context';
 import { useContext } from "react";
 
 
 function Header() {
   const userContext = useContext(UserContext);
+  const [cartData] = useContext(CartContext);
   console.log("User Context:", userContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sellerDropdownOpen, setSellerDropdownOpen] = useState(false);
@@ -51,7 +52,9 @@ function Header() {
               <Link className="nav-link text-light" to="/categories">Category</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-light" to="/checkout">My cart</Link>
+              <Link className="nav-link text-light" to="/checkout">
+                My cart ({cartData ? cartData.length : 0})
+              </Link>
             </li>
             {/* Customer My Account Dropdown */}
             <li className="nav-item" ref={dropdownRef} style={{ position: "relative" }}>

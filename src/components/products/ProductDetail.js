@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
+import { CartContext } from '../context';
 
 function ProductDetail() {
   const { product_id } = useParams();
   const [product, setProduct] = useState(null);
-  const [inCart, setInCart] = useState(false);
+  const [CartButtonClick, setCartButtonClick] = useState(false);
+  const [removeCartButtonClick, setremoveCartButtonClick] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
   const [currentImg, setCurrentImg] = useState(0);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -12,7 +14,7 @@ function ProductDetail() {
   const [relatedPage, setRelatedPage] = useState(1);
   const [relatedTotal, setRelatedTotal] = useState(0);
   const [relatedPageSize, setRelatedPageSize] = useState(8);
-
+  const [cartData, setCartData] = useContext(CartContext);
   // Fetch main product by ID
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/api/product/${product_id}/`)
@@ -49,12 +51,44 @@ function ProductDetail() {
     }
   }, [product, relatedPage]);
 
+  // Check if product is in cart
+  useEffect(() => {
+    if (product && cartData) {
+      const exists = cartData.some(item => item.product_id === product.id);
+      setCartButtonClick(exists);
+    }
+  }, [product, cartData]);
+
   if (!product) {
     return <div className="container py-5">Loading...</div>;
   }
 
   const images = product.product_images || [];
   const totalImages = images.length;
+
+  const cartbuttonhandler = () => {
+    if (!product) return;
+    const newItem = {
+      product_id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.product_images?.[0]?.image || "",
+      // add more fields if needed
+    };
+    // Prevent duplicates
+    if (!cartData.some(item => item.product_id === product.id)) {
+      const updatedCart = [...cartData, newItem];
+      setCartData(updatedCart);
+    }
+    setCartButtonClick(true);
+  };
+
+  const cartremovehandler = () => {
+    if (!product) return;
+    const updatedCart = cartData.filter(item => item.product_id !== product.id);
+    setCartData(updatedCart);
+    setCartButtonClick(false);
+  };
 
   return (
     <div className="container py-5">
@@ -124,13 +158,23 @@ function ProductDetail() {
               </h5>
               <h3 className="text-success mb-3">${product.price}</h3>
               <div className="mb-3 d-flex flex-wrap gap-2">
-                <button
-                  className={`btn btn-primary ${inCart ? "disabled" : ""}`}
-                  onClick={() => setInCart(true)}
-                >
-                  <i className="fa-solid fa-cart-plus me-1"></i>
-                  {inCart ? "Added to Cart" : "Add to Cart"}
-                </button>
+                {!CartButtonClick ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={cartbuttonhandler}
+                  >
+                    <i className="fa-solid fa-cart-plus me-1"></i>
+                    Add to Cart
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-danger"
+                    onClick={cartremovehandler}
+                  >
+                    <i className="fa-solid fa-cart-arrow-down me-1"></i>
+                    Remove from Cart
+                  </button>
+                )}
                 <button
                   className={`btn btn-outline-danger ${inWishlist ? "active" : ""}`}
                   onClick={() => setInWishlist((w) => !w)}
@@ -299,3 +343,5 @@ function ProductDetail() {
 }
 
 export default ProductDetail;
+
+

@@ -1,4 +1,3 @@
-
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import {useState} from "react";
@@ -52,6 +51,16 @@ const submitHandler = (event) => {
         setFormError(false);
         setSuccessMsg('Registration successful!');
         setErrorMsg('');
+        // Store customer_id in localStorage and userContext for immediate use
+        if (response.data.id) {
+          localStorage.setItem('customer_id', response.data.id);
+          localStorage.setItem('userContext', JSON.stringify({
+            login: true,
+            id: response.data.id,
+            username: registerFormData.username,
+            customer_id: response.data.id
+          }));
+        }
         window.location.href = '/login'; // Redirect to login on success
       }
     });
