@@ -1,15 +1,36 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Sidebar from "../common/Sidebar";
-
+import axios from "axios";
 function Profile() {
   const [profile, setProfile] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john@example.com",
-    profilePic: "https://via.placeholder.com/120x120?text=Profile"
+    firstName: "",
+    lastName: "",
+    email: "",
+    profilePic: "",
+    username:'',
+    mobile: '',
   });
+  const customerid = localStorage.getItem("customer_id");
   const [edit, setEdit] = useState(false);
   const fileInputRef = useRef();
+
+  useEffect(() => {
+    if (customerid) {
+      fetch(`http://127.0.0.1:8000/api/customer/${customerid}/`)
+        .then(res => res.json())
+        .then(data => {
+          // Map API response to profile state
+          setProfile({
+            firstName: data.user?.first_name || "",
+            lastName: data.user?.last_name || "",
+            email: data.user?.email || "",
+            profilePic: (data.profilepic && data.profilepic.length > 0) ? data.profilepic[0].image : "", // Show first profile pic if exists
+            username: data.user?.username || "",
+            mobile: data.mobile || "",
+          });
+        });
+    }
+  }, [customerid]);
 
   function handleChange(e) {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -40,7 +61,7 @@ function Profile() {
           <div className="card shadow p-4" style={{ maxWidth: 400, width: "100%" }}>
             <h2 className="mb-4 text-center"><i className="fa fa-user me-2"></i>Profile</h2>
             <div className="text-center mb-3">
-              <img src={profile.profilePic} alt="Profile" className="rounded-circle mb-2" style={{ width: 100, height: 100, objectFit: "cover" }} />
+              <img src={profile.profilePic || "/default-profile.png"} alt="Profile" className="rounded-circle mb-2" style={{ width: 100, height: 100, objectFit: "cover" }} />
             </div>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
@@ -52,8 +73,16 @@ function Profile() {
                 <input name="lastName" className="form-control" value={profile.lastName} onChange={handleChange} disabled={!edit} />
               </div>
               <div className="mb-3">
+                <label className="form-label">Username</label>
+                <input name="username" className="form-control" value={profile.username} onChange={handleChange} disabled={!edit} />
+              </div>
+              <div className="mb-3">
                 <label className="form-label">Email</label>
                 <input name="email" className="form-control" value={profile.email} onChange={handleChange} disabled={!edit} />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Mobile</label>
+                <input name="mobile" className="form-control" value={profile.mobile} onChange={handleChange} disabled={!edit} />
               </div>
               <div className="mb-3">
                 <label className="form-label">Profile Picture</label>

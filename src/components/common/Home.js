@@ -5,34 +5,48 @@ import SingleProduct from "./SingleProduct";
 import { useEffect, useState } from "react";
 
 function Home() {
+  const [latestProducts, setLatestProducts] = useState([]);
+  const [sliderIndex, setSliderIndex] = useState(0);
+  const [popularProducts, setPopularProducts] = useState([]);
 
-  const [latestProducts, setProducts] = useState([]);
-useEffect(() => {
-  fetch("http://127.0.0.1:8000/api/products/")
-    .then(res => res.json())
-    .then(data => {
-      // Map API data to expected format for SingleProduct
-      const mapped = data.data.map(item => ({
-        id: item.id,
-        name: item.title, // or item.name if available
-        price: item.price || 0, // default if missing
-        logo: logo, // or item.image if available
-        category: item.category?.title || "",
-        category_id: item.category?.id || null,
-        vendor: item.vendor?.id || null,
-        detail: item.detail || "",
-        sells: item.sells, // <-- add sells
-      }));
-      setProducts(mapped);
-    });
-}, []);
-  console.log(latestProducts);
-  const popularProducts = [
-    { id: 5, slug: "popular-product-1", name: "Popular Product 1", category: "Electronics", category_slug: "electronics", category_id: 1, rating: 4.9, bought: 200, price: 149.99, logo },
-    { id: 6, slug: "popular-product-2", name: "Popular Product 2", category: "Fashion", category_slug: "fashion", category_id: 2, rating: 4.8, bought: 180, price: 89.99, logo },
-    { id: 7, slug: "popular-product-3", name: "Popular Product 3", category: "Sports", category_slug: "sports", category_id: 3, rating: 4.7, bought: 160, price: 129.99, logo },
-    { id: 8, slug: "popular-product-4", name: "Popular Product 4", category: "Home", category_slug: "home", category_id: 4, rating: 4.6, bought: 140, price: 59.99, logo },
-  ];
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/products/?page=1&page_size=20")
+      .then(res => res.json())
+      .then(data => {
+        const mapped = (data.data || []).map(item => ({
+          id: item.id,
+          name: item.title,
+          price: item.price || 0,
+          logo: item.product_images && item.product_images.length > 0
+            ? item.product_images[0].image
+            : logo,
+          category: item.category?.title || "",
+          category_id: item.category?.id || null,
+          vendor: item.vendor?.id || null,
+          detail: item.detail || "",
+          sells: item.sells,
+          listing_time: item.listing_time,
+        }));
+        setLatestProducts(mapped);
+        // Sort by sells descending and take top 4 for popular products
+        setPopularProducts(
+          [...mapped]
+            .sort((a, b) => (b.sells || 0) - (a.sells || 0))
+            .slice(0, 4)
+        );
+      });
+  }, []);
+
+  // Only show 4 at a time, but allow sliding through all latest products
+  const visibleProducts = latestProducts.slice(sliderIndex, sliderIndex + 4);
+
+  const handlePrev = () => {
+    setSliderIndex(i => Math.max(i - 1, 0));
+  };
+  const handleNext = () => {
+    setSliderIndex(i => Math.min(i + 1, Math.max(0, latestProducts.length - 4)));
+  };
+
   const popularSellers = [
     { name: "Seller One", rating: 4.9, totalSales: 1000 },
     { name: "Seller Two", rating: 4.8, totalSales: 900 },
@@ -49,21 +63,41 @@ useEffect(() => {
   return (
     <main className="py-5 bg-dark text-light">
       <div className="container">
-        {/* Latest Products */}
+        {/* Latest Products with slider */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h3 className="fw-bold">Latest Products</h3>
           <Link to="/products" className="btn btn-outline-light btn-sm rounded-pill">
             View All <i className="fa-solid fa-arrow-right-long ms-1"></i>
           </Link>
         </div>
-        <div className="row g-4">
-          {latestProducts.map((prod) => (
-            <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
-              <SingleProduct product={prod} />
+        <div className="position-relative">
+          <div className="row g-4">
+            {visibleProducts.map((prod) => (
+              <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
+                <SingleProduct product={prod} />
+              </div>
+            ))}
+          </div>
+          {latestProducts.length > 4 && (
+            <div className="d-flex justify-content-center align-items-center mt-3">
+              <button
+                className="btn btn-outline-light btn-sm me-2"
+                onClick={handlePrev}
+                disabled={sliderIndex === 0}
+              >
+                <i className="fa fa-chevron-left"></i>
+              </button>
+              <button
+                className="btn btn-outline-light btn-sm"
+                onClick={handleNext}
+                disabled={sliderIndex >= latestProducts.length - 4}
+              >
+                <i className="fa fa-chevron-right"></i>
+              </button>
             </div>
-          ))}
+          )}
         </div>
-        {/* Popular Products */}
+        {/* Popular Products (by sells) */}
         <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
           <h3 className="fw-bold">Popular Products</h3>
           <Link to="/products" className="btn btn-outline-light btn-sm rounded-pill">
