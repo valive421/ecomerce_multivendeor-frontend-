@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CartContext } from '../context';
+import { CartContext, WishlistContext } from '../context';
 
 function ProductDetail() {
   const { product_id } = useParams();
@@ -15,6 +15,7 @@ function ProductDetail() {
   const [relatedTotal, setRelatedTotal] = useState(0);
   const [relatedPageSize, setRelatedPageSize] = useState(8);
   const [cartData, setCartData] = useContext(CartContext);
+  const [wishlistData, setWishlistData] = useContext(WishlistContext);
   // Fetch main product by ID
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/api/product/${product_id}/`)
@@ -59,6 +60,14 @@ function ProductDetail() {
     }
   }, [product, cartData]);
 
+  // Check if product is in wishlist
+  useEffect(() => {
+    if (product && wishlistData) {
+      const exists = wishlistData.some(item => item.product_id === product.id);
+      setInWishlist(exists);
+    }
+  }, [product, wishlistData]);
+
   if (!product) {
     return <div className="container py-5">Loading...</div>;
   }
@@ -88,6 +97,24 @@ function ProductDetail() {
     const updatedCart = cartData.filter(item => item.product_id !== product.id);
     setCartData(updatedCart);
     setCartButtonClick(false);
+  };
+
+  const wishlistHandler = () => {
+    if (!product) return;
+    const newItem = {
+      product_id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.product_images?.[0]?.image || "",
+      // add more fields if needed
+    };
+    if (!wishlistData.some(item => item.product_id === product.id)) {
+      setWishlistData([...wishlistData, newItem]);
+      setInWishlist(true);
+    } else {
+      setWishlistData(wishlistData.filter(item => item.product_id !== product.id));
+      setInWishlist(false);
+    }
   };
 
   return (
@@ -186,7 +213,7 @@ function ProductDetail() {
                 )}
                 <button
                   className={`btn btn-outline-danger ${inWishlist ? "active" : ""}`}
-                  onClick={() => setInWishlist((w) => !w)}
+                  onClick={wishlistHandler}
                 >
                   <i className={`fa${inWishlist ? "s" : "r"} fa-heart me-1`}></i>
                   {inWishlist ? "Wishlisted" : "Add to Wishlist"}

@@ -1,7 +1,7 @@
 // App.js
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
-import { CartContext, UserContext } from './components/context';
+import { CartContext, UserContext, WishlistContext } from './components/context';
 import React, { useState, useRef, useEffect } from "react";
 import Header from './components/common/Header';
 import Home from './components/common/Home';
@@ -39,6 +39,7 @@ import SellerLogout from './components/seller/SellerLogout';
 import SellerAddProduct from './components/seller/SellerAddProduct';
 import Sellerchangepass from './components/seller/ChangePassword';
 const checkCart = localStorage.getItem('cart');
+const checkWishlist = localStorage.getItem('wishlist');
 function App() {
   // User state for authentication
   const [userContext, setUserContext] = React.useState(() => {
@@ -84,39 +85,55 @@ function App() {
     localStorage.setItem('cart', JSON.stringify(cartData));
   }, [cartData]);
 
+  // Wishlist state (global, like cart)
+  const [wishlistData, setWishlistData] = useState(() => {
+    try {
+      const parsed = JSON.parse(checkWishlist);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify(wishlistData));
+  }, [wishlistData]);
+
   return (
     <UserContext.Provider value={{ ...userContext, setUserContext }}>
       <CartContext.Provider value={[cartData, setCartData]}>
-        <Header />
-        <Routes>
-          <Route path='/confirm-order' element={<ConfirmOrder />} />
-          <Route path='/' element={<Home />} />
-          <Route path='/products' element={<AllProducts />} />
-          <Route path='/categories' element={<Categories />} />
-          <Route path='/category/:category_slug/:category_id' element={<Categoryproduct />} />
-          <Route path='/product/:product_id' element={<ProductDetail />} />
-          <Route path='/checkout' element={<Checkout />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/logout' element={<Logout />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/orders' element={<Orders />} />
-          <Route path='/wishlist' element={<Wishlist />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/changepassword' element={<ChangePassword />} />
-          <Route path='/addresses' element={<Addresses />} />
-          <Route path='/seller/login' element={<SellerLogin />} />
-          <Route path='/seller/register' element={<SellerRegister />} />
-          <Route path='/seller/dashboard' element={<SellerDashboard />} />
-          <Route path='/seller/products' element={<SellerProducts />} />
-          <Route path='/seller/orders' element={<SellerOrders />} />
-          <Route path='/seller/customers' element={<SellerCustomers />} />
-          <Route path='/seller/reports' element={<SellerReports />} />
-          <Route path='/seller/logout' element={<SellerLogout />} />
-          <Route path='/seller/products/add' element={<SellerAddProduct />} />
-          <Route path='/seller/changepassword' element={<Sellerchangepass />} />
-        </Routes>
-        <Footer />
+        <WishlistContext.Provider value={[wishlistData, setWishlistData]}>
+          <Header />
+          <Routes>
+            <Route path='/confirm-order' element={<ConfirmOrder />} />
+            <Route path='/' element={<Home />} />
+            <Route path='/products' element={<AllProducts />} />
+            <Route path='/categories' element={<Categories />} />
+            <Route path='/category/:category_slug/:category_id' element={<Categoryproduct />} />
+            <Route path='/product/:product_id' element={<ProductDetail />} />
+            <Route path='/checkout' element={<Checkout />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/logout' element={<Logout />} />
+            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/orders' element={<Orders />} />
+            <Route path='/wishlist' element={<Wishlist />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/changepassword' element={<ChangePassword />} />
+            <Route path='/addresses' element={<Addresses />} />
+            <Route path='/seller/login' element={<SellerLogin />} />
+            <Route path='/seller/register' element={<SellerRegister />} />
+            <Route path='/seller/dashboard' element={<SellerDashboard />} />
+            <Route path='/seller/products' element={<SellerProducts />} />
+            <Route path='/seller/orders' element={<SellerOrders />} />
+            <Route path='/seller/customers' element={<SellerCustomers />} />
+            <Route path='/seller/reports' element={<SellerReports />} />
+            <Route path='/seller/logout' element={<SellerLogout />} />
+            <Route path='/seller/products/add' element={<SellerAddProduct />} />
+            <Route path='/seller/changepassword' element={<Sellerchangepass />} />
+          </Routes>
+          <Footer />
+        </WishlistContext.Provider>
       </CartContext.Provider>
     </UserContext.Provider>
   );

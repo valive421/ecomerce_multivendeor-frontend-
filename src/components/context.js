@@ -1,10 +1,13 @@
-import { createContext } from "react";
+import React from "react";
 
 // Only export contexts, do not import any components here.
 // Make sure this file does NOT import anything except from 'react'.
 
-export const UserContext = createContext(null);
-export const CartContext = createContext(null);
+export const UserContext = React.createContext();
+export const CartContext = React.createContext();
+
+// Add WishlistContext for global wishlist state
+export const WishlistContext = React.createContext();
 
 // Do not import any components or use CartContext in this file.
 // Only define and export contexts here.
