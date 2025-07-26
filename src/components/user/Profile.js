@@ -49,8 +49,42 @@ function Profile() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setEdit(false);
-    // Save logic here
+    // Prepare form data for PATCH request
+    const formData = new FormData();
+    formData.append("first_name", profile.firstName);
+    formData.append("last_name", profile.lastName);
+    formData.append("email", profile.email);
+    formData.append("username", profile.username);
+    formData.append("mobile", profile.mobile);
+
+    // If a new profile picture is selected (base64), upload it
+    if (fileInputRef.current && fileInputRef.current.files[0]) {
+      formData.append("image", fileInputRef.current.files[0]);
+    }
+
+    // Update user info (PATCH to /api/customer/<id>/)
+    fetch(`http://127.0.0.1:8000/api/customer/${customerid}/`, {
+      method: "PATCH",
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        // Optionally, update UI with new data
+        setEdit(false);
+        // Refetch profile to update UI with backend changes (including new profile pic)
+        fetch(`http://127.0.0.1:8000/api/customer/${customerid}/`)
+          .then(res => res.json())
+          .then(data => {
+            setProfile({
+              firstName: data.user?.first_name || "",
+              lastName: data.user?.last_name || "",
+              email: data.user?.email || "",
+              profilePic: (data.profilepic && data.profilepic.length > 0) ? data.profilepic[0].image : "",
+              username: data.user?.username || "",
+              mobile: data.mobile || "",
+            });
+          });
+      });
   }
 
   return (
@@ -92,7 +126,6 @@ function Profile() {
                   className="form-control"
                   ref={fileInputRef}
                   onChange={handleImageChange}
-                  disabled={!edit}
                 />
               </div>
               {edit ? (
@@ -109,3 +142,4 @@ function Profile() {
 }
 
 export default Profile;
+
