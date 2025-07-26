@@ -25,12 +25,13 @@ function CategoryProducts(props) {
               name: item.title,
               price: item.price || 0,
               logo: item.product_images && item.product_images.length > 0
-            ? item.product_images[0].image
-            : null,
+                ? item.product_images[0].image
+                : null,
               category: item.category?.title || "",
               category_id: item.category?.id || null,
               vendor: item.vendor?.id || null,
               detail: item.detail || "",
+              sells: item.sells, // <-- add sells
             }))
           : [];
         setProducts(mapped);

@@ -5,7 +5,7 @@ function SingleProduct({ product }) {
   if (!product) {
     return <div>No product data available.</div>;
   }
-console.log(product);
+  console.log(product);
   return (
     <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
       <img
@@ -37,6 +37,13 @@ console.log(product);
           </div>
         )}
         {product.price && <p className="card-text">Price: ${product.price}</p>}
+        {/* Show sells if present */}
+        {typeof product.sells !== "undefined" && (
+          <p className="card-text">
+            <i className="fa-solid fa-fire me-1"></i>
+            Sold: {product.sells}
+          </p>
+        )}
         {product.bought && (
           <p className="card-text">
             <i className="fa-solid fa-user-check me-1"></i>Bought: {product.bought}

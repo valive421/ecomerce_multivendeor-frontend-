@@ -17,12 +17,11 @@ useEffect(() => {
         name: item.title, // or item.name if available
         price: item.price || 0, // default if missing
         logo: logo, // or item.image if available
-        // Flatten nested objects to avoid React child errors
-        category: item.category?.title || "", // extract category title
+        category: item.category?.title || "",
         category_id: item.category?.id || null,
         vendor: item.vendor?.id || null,
         detail: item.detail || "",
-        // ...add other fields as needed, but avoid passing objects
+        sells: item.sells, // <-- add sells
       }));
       setProducts(mapped);
     });
@@ -132,3 +131,4 @@ useEffect(() => {
 }
 
 export default Home;
+

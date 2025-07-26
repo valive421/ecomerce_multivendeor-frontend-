@@ -157,6 +157,15 @@ function ProductDetail() {
                 ID: <span className="badge bg-secondary">{product.id}</span>
               </h5>
               <h3 className="text-success mb-3">${product.price}</h3>
+              {/* Show sells if present */}
+              {typeof product.sells !== "undefined" && (
+                <div className="mb-2">
+                  <span className="badge bg-warning text-dark">
+                    <i className="fa-solid fa-fire me-1"></i>
+                    Sold: {product.sells}
+                  </span>
+                </div>
+              )}
               <div className="mb-3 d-flex flex-wrap gap-2">
                 {!CartButtonClick ? (
                   <button
@@ -267,6 +276,10 @@ function ProductDetail() {
                   <tr><td>Price</td><td>${product.price}</td></tr>
                   <tr><td>Category</td><td>{product.category?.title}</td></tr>
                   <tr><td>Vendor</td><td>{product.vendor?.address}</td></tr>
+                  {/* Show sells in meta info */}
+                  {typeof product.sells !== "undefined" && (
+                    <tr><td>Sold</td><td>{product.sells}</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
