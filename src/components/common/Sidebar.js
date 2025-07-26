@@ -3,24 +3,36 @@ function Sidebar() {
   return (
     <div className="col-md-3 mb-4 mb-md-0">
           <ul className="list-group">
-            <li className="list-group-item active">
-              Dashboard
-            </li>
-            <li className="list-group-item">
-              <Link to="/orders" className="text-decoration-none text-dark">Orders</Link>
-            </li>
-            <li className="list-group-item">
-              <Link to="/wishlist" className="text-decoration-none text-dark">Wishlist</Link>
-            </li>
-            <li className="list-group-item">
-              <Link to="/profile" className="text-decoration-none text-dark">Profile</Link>
-            </li>
-            <li className="list-group-item">
-              <Link to="/addresses" className="text-decoration-none text-dark">Addresses</Link>
-            </li>
-             <li className="list-group-item">
-              <Link to="/changepassword" className="text-decoration-none text-dark">Change Password</Link>
-            </li>
+            <Link to ='/dashboard' className="text-decoration-none text-dark">
+              <li className="list-group-item active">
+                Dashboard
+              </li>
+            </Link>
+            <Link to="/orders" className="text-decoration-none text-dark">
+              <li className="list-group-item">
+                Orders
+              </li>
+            </Link>
+            <Link to="/wishlist" className="text-decoration-none text-dark">
+              <li className="list-group-item">
+                Wishlist
+              </li>
+            </Link>
+            <Link to="/profile" className="text-decoration-none text-dark">
+              <li className="list-group-item">
+                Profile
+              </li>
+            </Link>
+            <Link to="/addresses" className="text-decoration-none text-dark">
+              <li className="list-group-item">
+                Addresses
+              </li>
+            </Link>
+            <Link to="/changepassword" className="text-decoration-none text-dark">
+              <li className="list-group-item">
+                Change Password
+              </li>
+            </Link>
           </ul>
         </div>
   );

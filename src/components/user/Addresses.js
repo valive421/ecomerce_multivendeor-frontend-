@@ -1,25 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../common/Sidebar";
 
 function Addresses() {
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      address: "123 Main St, City, Country",
-      phone: "1234567890",
-      isDefault: true
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      address: "456 Elm St, City, Country",
-      phone: "9876543210",
-      isDefault: false
-    }
-  ]);
+  const customerId = localStorage.getItem("customer_id");
+  const [addresses, setAddresses] = useState([]);
+  const [newAddress, setNewAddress] = useState({ address: "", default_address: false });
 
-  const [newAddress, setNewAddress] = useState({ name: "", address: "", phone: "" });
+  useEffect(() => {
+    if (customerId) {
+      fetch(`http://127.0.0.1:8000/api/address/?customer=${customerId}`)
+        .then(res => res.json())
+        .then(data => {
+          setAddresses(data.data || []);
+        });
+    }
+  }, [customerId]);
 
   function handleChange(e) {
     setNewAddress({ ...newAddress, [e.target.name]: e.target.value });
@@ -27,25 +22,56 @@ function Addresses() {
 
   function handleAdd(e) {
     e.preventDefault();
-    if (newAddress.name && newAddress.address && newAddress.phone) {
-      setAddresses([
-        ...addresses,
-        { ...newAddress, id: Date.now(), isDefault: false }
-      ]);
-      setNewAddress({ name: "", address: "", phone: "" });
+    if (newAddress.address && customerId) {
+      fetch("http://127.0.0.1:8000/api/address/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: Number(customerId), // Ensure customer is sent as an integer
+          address: newAddress.address,
+          default_address: false
+        })
+      })
+        .then(res => res.json())
+        .then(addr => {
+          setAddresses([...addresses, addr]);
+          setNewAddress({ address: "", default_address: false });
+        });
     }
   }
 
   function handleRemove(id) {
-    setAddresses(addresses.filter(addr => addr.id !== id));
+    fetch(`http://127.0.0.1:8000/api/address/${id}/`, {
+      method: "DELETE"
+    }).then(() => {
+      setAddresses(addresses.filter(addr => addr.id !== id));
+    });
   }
 
   function handleMarkDefault(id) {
-    setAddresses(addresses.map(addr =>
-      addr.id === id
-        ? { ...addr, isDefault: true }
-        : { ...addr, isDefault: false }
-    ));
+    // Set all addresses to default_address: false, then set this one to true
+    addresses.forEach(addr => {
+      if (addr.id !== id && addr.default_address) {
+        fetch(`http://127.0.0.1:8000/api/address/${addr.id}/`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ default_address: false })
+        });
+      }
+    });
+    fetch(`http://127.0.0.1:8000/api/address/${id}/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ default_address: true })
+    })
+      .then(res => res.json())
+      .then(() => {
+        setAddresses(addresses.map(addr =>
+          addr.id === id
+            ? { ...addr, default_address: true }
+            : { ...addr, default_address: false }
+        ));
+      });
   }
 
   return (
@@ -56,17 +82,7 @@ function Addresses() {
           <h2 className="mb-4">My Addresses</h2>
           <form className="mb-4" onSubmit={handleAdd} style={{ maxWidth: 500 }}>
             <div className="row g-2">
-              <div className="col-md-4">
-                <input
-                  name="name"
-                  className="form-control"
-                  placeholder="Name"
-                  value={newAddress.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="col-md-5">
+              <div className="col-md-10">
                 <input
                   name="address"
                   className="form-control"
@@ -76,17 +92,7 @@ function Addresses() {
                   required
                 />
               </div>
-              <div className="col-md-2">
-                <input
-                  name="phone"
-                  className="form-control"
-                  placeholder="Phone"
-                  value={newAddress.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="col-md-1 d-grid">
+              <div className="col-md-2 d-grid">
                 <button type="submit" className="btn btn-success">Add</button>
               </div>
             </div>
@@ -97,16 +103,15 @@ function Addresses() {
                 <div className="card shadow-sm border-0 p-3 d-flex flex-row align-items-center justify-content-between">
                   <div>
                     <div className="fw-bold">
-                      {addr.name}
-                      {addr.isDefault && (
+                      Address #{addr.id}
+                      {addr.default_address && (
                         <span className="badge bg-success ms-2">Default</span>
                       )}
                     </div>
                     <div className="small">{addr.address}</div>
-                    <div className="small text-muted">{addr.phone}</div>
                   </div>
                   <div className="d-flex flex-column align-items-end gap-2">
-                    {!addr.isDefault && (
+                    {!addr.default_address && (
                       <button
                         className="btn btn-outline-primary btn-sm"
                         onClick={() => handleMarkDefault(addr.id)}
@@ -132,3 +137,4 @@ function Addresses() {
 }
 
 export default Addresses;
+
