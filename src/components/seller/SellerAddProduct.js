@@ -13,6 +13,9 @@ function SellerAddProduct() {
   const [categories, setCategories] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [newCategory, setNewCategory] = useState({ title: "", detail: "" });
+  const [categoryMsg, setCategoryMsg] = useState("");
   const navigate = useNavigate();
   const sellerId = localStorage.getItem("seller_id");
 
@@ -65,6 +68,37 @@ function SellerAddProduct() {
       .catch(() => setErrorMsg("Failed to add product."));
   };
 
+  const handleNewCategoryChange = (e) => {
+    const { name, value } = e.target;
+    setNewCategory({ ...newCategory, [name]: value });
+  };
+
+  const handleAddCategory = (e) => {
+    e.preventDefault();
+    setCategoryMsg("");
+    if (!newCategory.title) {
+      setCategoryMsg("Title is required.");
+      return;
+    }
+    fetch("http://127.0.0.1:8000/api/categories/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCategory)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.id) {
+          setCategories(prev => [...prev, data]);
+          setForm(f => ({ ...f, category: data.id }));
+          setShowCategoryModal(false);
+          setNewCategory({ title: "", detail: "" });
+        } else {
+          setCategoryMsg("Failed to add category.");
+        }
+      })
+      .catch(() => setCategoryMsg("Failed to add category."));
+  };
+
   return (
     <div className="container py-5">
       <div className="row">
@@ -100,18 +134,28 @@ function SellerAddProduct() {
               </div>
               <div className="mb-3">
                 <label className="form-label">Category</label>
-                <select
-                  name="category"
-                  className="form-control"
-                  value={form.category}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Category</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.title}</option>
-                  ))}
-                </select>
+                <div className="input-group">
+                  <select
+                    name="category"
+                    className="form-control"
+                    value={form.category}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.title}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => setShowCategoryModal(true)}
+                    title="Add new category"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
               <div className="mb-3">
                 <label className="form-label">Description</label>
@@ -137,6 +181,47 @@ function SellerAddProduct() {
               </div>
               <button type="submit" className="btn btn-success w-100">Add Product</button>
             </form>
+            {/* Modal for adding new category */}
+            {showCategoryModal && (
+              <div className="modal d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.3)" }}>
+                <div className="modal-dialog">
+                  <div className="modal-content">
+                    <form onSubmit={handleAddCategory}>
+                      <div className="modal-header">
+                        <h5 className="modal-title">Add New Category</h5>
+                        <button type="button" className="btn-close" onClick={() => setShowCategoryModal(false)}></button>
+                      </div>
+                      <div className="modal-body">
+                        {categoryMsg && <div className="alert alert-danger">{categoryMsg}</div>}
+                        <div className="mb-3">
+                          <label className="form-label">Title</label>
+                          <input
+                            name="title"
+                            className="form-control"
+                            value={newCategory.title}
+                            onChange={handleNewCategoryChange}
+                            required
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label">Detail</label>
+                          <textarea
+                            name="detail"
+                            className="form-control"
+                            value={newCategory.detail}
+                            onChange={handleNewCategoryChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowCategoryModal(false)}>Cancel</button>
+                        <button type="submit" className="btn btn-primary">Add Category</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
