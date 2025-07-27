@@ -38,6 +38,7 @@ import SellerReports from './components/seller/SellerReports';
 import SellerLogout from './components/seller/SellerLogout';
 import SellerAddProduct from './components/seller/SellerAddProduct';
 import Sellerchangepass from './components/seller/ChangePassword';
+import SellerEditProduct from './components/seller/SellerEditProduct';
 const checkCart = localStorage.getItem('cart');
 const checkWishlist = localStorage.getItem('wishlist');
 function App() {
@@ -130,6 +131,7 @@ function App() {
             <Route path='/seller/reports' element={<SellerReports />} />
             <Route path='/seller/logout' element={<SellerLogout />} />
             <Route path='/seller/products/add' element={<SellerAddProduct />} />
+            <Route path='/seller/products/edit/:id' element={<SellerEditProduct />} />
             <Route path='/seller/changepassword' element={<Sellerchangepass />} />
           </Routes>
           <Footer />

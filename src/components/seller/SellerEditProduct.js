@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
 
-function SellerAddProduct() {
+function SellerEditProduct() {
+  const { id } = useParams();
   const [form, setForm] = useState({
     title: "",
     price: "",
     category: "",
     description: "",
-    images: []
+    images: [],
   });
   const [categories, setCategories] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const sellerId = localStorage.getItem("seller_id");
 
@@ -21,7 +23,20 @@ function SellerAddProduct() {
     fetch("http://127.0.0.1:8000/api/categories/")
       .then(res => res.json())
       .then(data => setCategories(data.data || data));
-  }, []);
+    // Fetch product details
+    fetch(`http://127.0.0.1:8000/api/product/${id}/`)
+      .then(res => res.json())
+      .then(data => {
+        setForm({
+          title: data.title || "",
+          price: data.price || "",
+          category: data.category?.id || "",
+          description: data.detail || "",
+          images: [],
+        });
+        setLoading(false);
+      });
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -49,21 +64,25 @@ function SellerAddProduct() {
     if (form.images && form.images.length > 0) {
       form.images.forEach(img => formData.append("images", img));
     }
-    fetch("http://127.0.0.1:8000/api/products/", {
-      method: "POST",
+    fetch(`http://127.0.0.1:8000/api/product/${id}/`, {
+      method: "PATCH",
       body: formData
     })
       .then(res => res.json())
       .then(data => {
         if (data.id || data.bool) {
-          setSuccessMsg("Product added successfully!");
+          setSuccessMsg("Product updated successfully!");
           setTimeout(() => navigate("/seller/products"), 1000);
         } else {
-          setErrorMsg(data.msg || "Failed to add product.");
+          setErrorMsg(data.msg || "Failed to update product.");
         }
       })
-      .catch(() => setErrorMsg("Failed to add product."));
+      .catch(() => setErrorMsg("Failed to update product."));
   };
+
+  if (loading) {
+    return <div className="container py-5">Loading...</div>;
+  }
 
   return (
     <div className="container py-5">
@@ -71,7 +90,7 @@ function SellerAddProduct() {
         <SellerSidebar />
         <div className="col-md-9 d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
           <div className="card shadow p-4" style={{ maxWidth: 500, width: "100%" }}>
-            <h2 className="mb-4 text-center">Add Product</h2>
+            <h2 className="mb-4 text-center">Edit Product</h2>
             {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
             {successMsg && <div className="alert alert-success">{successMsg}</div>}
             <form onSubmit={handleSubmit}>
@@ -125,7 +144,7 @@ function SellerAddProduct() {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Images</label>
+                <label className="form-label">Images (leave blank to keep current)</label>
                 <input
                   name="images"
                   type="file"
@@ -135,7 +154,7 @@ function SellerAddProduct() {
                   onChange={handleChange}
                 />
               </div>
-              <button type="submit" className="btn btn-success w-100">Add Product</button>
+              <button type="submit" className="btn btn-success w-100">Update Product</button>
             </form>
           </div>
         </div>
@@ -144,4 +163,4 @@ function SellerAddProduct() {
   );
 }
 
-export default SellerAddProduct;
+export default SellerEditProduct;

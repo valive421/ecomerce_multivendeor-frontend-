@@ -1,18 +1,45 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
 
 function SellerProducts() {
-  // Demo products
-  const products = [
-    { id: 1, name: "Seller Product 1", price: 100, stock: 10 },
-    { id: 2, name: "Seller Product 2", price: 200, stock: 5 },
-    { id: 3, name: "Seller Product 3", price: 150, stock: 8 }
-  ];
+  const [products, setProducts] = useState([]);
+  const sellerId = localStorage.getItem('seller_id');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (sellerId) {
+      fetch(`http://127.0.0.1:8000/api/products/?vendor=${sellerId}`)
+        .then(res => res.json())
+        .then(data => {
+          // If paginated, use data.data; else use data
+          setProducts(data.data || data);
+        });
+    }
+  }, [sellerId]);
+
+  const handleView = (id) => {
+    navigate(`/product/${id}`);
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/seller/products/edit/${id}`);
+  };
 
   const handleDelete = (id) => {
-    // Add delete logic here
-    alert(`Delete product with id ${id}`);
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      fetch(`http://127.0.0.1:8000/api/product/${id}/`, {
+        method: "DELETE"
+      })
+        .then(res => {
+          if (res.ok) {
+            setProducts(products => products.filter(prod => prod.id !== id));
+          } else {
+            alert("Failed to delete product.");
+          }
+        })
+        .catch(() => alert("Failed to delete product."));
+    }
   };
 
   return (
@@ -36,16 +63,22 @@ function SellerProducts() {
               {products.map((prod, idx) => (
                 <tr key={prod.id}>
                   <td>{idx + 1}</td>
-                  <td>{prod.name}</td>
+                  <td>{prod.title}</td>
                   <td>${prod.price}</td>
-                  <td>{prod.stock}</td>
+                  <td>{prod.sells ?? "-"}</td>
                   <td>
-                    <Link to={`/seller/products/view/${prod.id}`} className="btn btn-sm btn-info me-2">
+                    <button
+                      className="btn btn-sm btn-info me-2"
+                      onClick={() => handleView(prod.id)}
+                    >
                       View
-                    </Link>
-                    <Link to={`/seller/products/edit/${prod.id}`} className="btn btn-sm btn-warning me-2">
+                    </button>
+                    <button
+                      className="btn btn-sm btn-warning me-2"
+                      onClick={() => handleEdit(prod.id)}
+                    >
                       Edit
-                    </Link>
+                    </button>
                     <button
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDelete(prod.id)}
