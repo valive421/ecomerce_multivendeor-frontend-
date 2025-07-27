@@ -264,7 +264,7 @@ function ConfirmOrder() {
                               "X-CSRFToken": csrftoken,
                             },
                             credentials: "include",
-                            body: JSON.stringify({ status: "paid", paypal_id: details.id }),
+                            body: JSON.stringify({ status: "Paid", paypal_id: details.id }),
                           });
                         } catch (err) {
                           console.error("Failed to update order status in backend:", err);
