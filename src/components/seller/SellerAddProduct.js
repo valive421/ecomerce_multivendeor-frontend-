@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
+import './liquidGlass.css';
 
 function SellerAddProduct() {
   const [form, setForm] = useState({
@@ -100,14 +101,14 @@ function SellerAddProduct() {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row">
         <SellerSidebar />
         <div className="col-md-9 d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
-          <div className="card shadow p-4" style={{ maxWidth: 500, width: "100%" }}>
-            <h2 className="mb-4 text-center">Add Product</h2>
-            {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-            {successMsg && <div className="alert alert-success">{successMsg}</div>}
+          <div className="glass-card shadow p-4 animate__animated animate__fadeInDown" style={{ maxWidth: 500, width: "100%" }}>
+            <h2 className="mb-4 text-center text-gradient"><i className="fa-solid fa-plus me-2"></i>Add Product</h2>
+            {errorMsg && <div className="alert alert-danger glass-card">{errorMsg}</div>}
+            {successMsg && <div className="alert alert-success glass-card">{successMsg}</div>}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Title</label>
@@ -185,7 +186,7 @@ function SellerAddProduct() {
             {showCategoryModal && (
               <div className="modal d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.3)" }}>
                 <div className="modal-dialog">
-                  <div className="modal-content">
+                  <div className="modal-content glass-card">
                     <form onSubmit={handleAddCategory}>
                       <div className="modal-header">
                         <h5 className="modal-title">Add New Category</h5>

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContext, CartContext } from '../context';
 import { useContext } from "react";
+import './liquidGlass.css';
 
 
 function Header() {
@@ -28,9 +29,9 @@ function Header() {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+    <nav className="navbar navbar-expand-lg navbar-dark glass-card shadow-sm sticky-top px-2 py-2" style={{ background: "rgba(30,41,59,0.95)", borderRadius: "1.5rem", margin: "0.5rem 0" }}>
       <div className="container">
-        <Link className="navbar-brand fw-bold fs-4 text-light" to="/">
+        <Link className="navbar-brand fw-bold fs-4 text-gradient" to="/" style={{ letterSpacing: "1px" }}>
           <i className="fa-solid fa-store me-2"></i>bit Bazzar
         </Link>
         <button
@@ -44,15 +45,16 @@ function Header() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto align-items-center">
             <li className="nav-item">
-              <Link className="nav-link text-light" to="/">Home</Link>
+              <Link className="nav-link text-gradient" to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-light" to="/categories">Category</Link>
+              <Link className="nav-link text-gradient" to="/categories">Category</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-light" to="/checkout">
+              <Link className="nav-link text-gradient" to="/checkout">
+                <i className="fa-solid fa-cart-shopping me-1"></i>
                 My cart ({cartData ? cartData.length : 0})
               </Link>
             </li>

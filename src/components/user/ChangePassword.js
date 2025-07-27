@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../common/Sidebar";
+import './liquidGlass.css';
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("");
@@ -18,13 +19,13 @@ function ChangePassword() {
   }
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row">
         <Sidebar />
-        <div className="col-md-9 d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
-          <div className="card shadow p-4" style={{ maxWidth: 400, width: "100%" }}>
-            <h2 className="mb-4 text-center"><i className="fa fa-key me-2"></i>Change Password</h2>
-            {success && <div className="alert alert-success">Password changed successfully!</div>}
+        <div className="col-md-9 d-flex flex-column align-items-center">
+          <div className="glass-card shadow p-4 animate__animated animate__fadeInDown" style={{ maxWidth: 500, width: "100%" }}>
+            <h2 className="mb-4 text-center text-gradient"><i className="fa fa-key me-2"></i>Change Password</h2>
+            {success && <div className="alert alert-success glass-card">Password changed successfully!</div>}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Old Password</label>

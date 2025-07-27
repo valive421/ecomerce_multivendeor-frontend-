@@ -1,6 +1,7 @@
 import React from "react";
 import SingleProduct from "../common/SingleProduct";
 import { useEffect, useState } from "react";
+import './liquidGlass.css';
 
 function AllProducts() {
   const [AllProducts, setProducts] = useState([]);
@@ -58,8 +59,13 @@ function AllProducts() {
   };
 
   return (
-    <div className="container py-5">
-      <h1 className="mb-4">All Products</h1>
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
+      <div className="glass-card mb-4 px-4 py-4 animate__animated animate__fadeInDown d-flex align-items-center justify-content-between">
+        <h1 className="mb-0 fw-bold text-gradient" style={{ letterSpacing: "1px" }}>
+          <i className="fa-solid fa-cubes me-2"></i> All Products
+        </h1>
+        <i className="fa-solid fa-cube fa-2x text-primary animate__animated animate__pulse animate__infinite"></i>
+      </div>
       <div className="row g-4">
         {AllProducts.map((prod) => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
@@ -70,16 +76,16 @@ function AllProducts() {
       {/* Pagination */}
       <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-glass btn-outline-primary"
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage === 1 || loading}
         >
-          Previous
+          <i className="fa fa-chevron-left"></i> Previous
         </button>
         {[...Array(totalPages)].map((_, idx) => (
           <button
             key={idx + 1}
-            className={`btn ${currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"}`}
+            className={`btn btn-glass ${currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"}`}
             onClick={() => handlePageClick(idx + 1)}
             disabled={loading}
           >
@@ -87,11 +93,11 @@ function AllProducts() {
           </button>
         ))}
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-glass btn-outline-primary"
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage === totalPages || loading}
         >
-          Next
+          Next <i className="fa fa-chevron-right"></i>
         </button>
       </div>
     </div>

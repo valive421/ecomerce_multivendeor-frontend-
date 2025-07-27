@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../../logo.svg"; // fixed path
+import logo from "../../logo.svg";
 import SingleProduct from "./SingleProduct";
 import { useEffect, useState } from "react";
+import './liquidGlass.css';
 
 function Home() {
   const [latestProducts, setLatestProducts] = useState([]);
@@ -61,12 +62,14 @@ function Home() {
   ];
 
   return (
-    <main className="py-5 bg-dark text-light">
+    <main className="py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="container">
         {/* Latest Products with slider */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h3 className="fw-bold">Latest Products</h3>
-          <Link to="/products" className="btn btn-outline-light btn-sm rounded-pill">
+        <div className="glass-card mb-4 px-4 py-4 animate__animated animate__fadeInDown d-flex align-items-center justify-content-between">
+          <h3 className="fw-bold text-gradient mb-0">
+            <i className="fa-solid fa-bolt me-2"></i> Latest Products
+          </h3>
+          <Link to="/products" className="btn btn-glass btn-outline-primary btn-sm rounded-pill">
             View All <i className="fa-solid fa-arrow-right-long ms-1"></i>
           </Link>
         </div>
@@ -81,14 +84,14 @@ function Home() {
           {latestProducts.length > 4 && (
             <div className="d-flex justify-content-center align-items-center mt-3">
               <button
-                className="btn btn-outline-light btn-sm me-2"
+                className="btn btn-glass btn-outline-primary btn-sm me-2"
                 onClick={handlePrev}
                 disabled={sliderIndex === 0}
               >
                 <i className="fa fa-chevron-left"></i>
               </button>
               <button
-                className="btn btn-outline-light btn-sm"
+                className="btn btn-glass btn-outline-primary btn-sm"
                 onClick={handleNext}
                 disabled={sliderIndex >= latestProducts.length - 4}
               >
@@ -98,9 +101,11 @@ function Home() {
           )}
         </div>
         {/* Popular Products (by sells) */}
-        <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
-          <h3 className="fw-bold">Popular Products</h3>
-          <Link to="/products" className="btn btn-outline-light btn-sm rounded-pill">
+        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+          <h3 className="fw-bold text-gradient mb-0">
+            <i className="fa-solid fa-fire me-2"></i> Popular Products
+          </h3>
+          <Link to="/products" className="btn btn-glass btn-outline-primary btn-sm rounded-pill">
             View All <i className="fa-solid fa-arrow-right-long ms-1"></i>
           </Link>
         </div>
@@ -112,16 +117,18 @@ function Home() {
           ))}
         </div>
         {/* Popular Sellers */}
-        <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
-          <h3 className="fw-bold">Popular Sellers</h3>
-          <Link to="/sellers" className="btn btn-outline-light btn-sm rounded-pill">
+        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+          <h3 className="fw-bold text-gradient mb-0">
+            <i className="fa-solid fa-user-tie me-2"></i> Popular Sellers
+          </h3>
+          <Link to="/sellers" className="btn btn-glass btn-outline-primary btn-sm rounded-pill">
             View All <i className="fa-solid fa-arrow-right-long ms-1"></i>
           </Link>
         </div>
         <div className="row g-4">
           {popularSellers.map((seller, i) => (
             <div className="col-12 col-sm-6 col-md-3" key={i}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light text-center py-3">
+              <div className="glass-card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light text-center py-3 animate__animated animate__fadeInUp">
                 <h5 className="card-title fw-bold">{seller.name}</h5>
                 <div className="mb-2">
                   {[...Array(5)].map((_, star) => (
@@ -135,22 +142,24 @@ function Home() {
           ))}
         </div>
         {/* Popular Categories */}
-        <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
-          <h3 className="fw-bold">Popular Categories</h3>
-          <Link to="/categories" className="btn btn-outline-light btn-sm rounded-pill">
+        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+          <h3 className="fw-bold text-gradient mb-0">
+            <i className="fa-solid fa-layer-group me-2"></i> Popular Categories
+          </h3>
+          <Link to="/categories" className="btn btn-glass btn-outline-primary btn-sm rounded-pill">
             View All <i className="fa-solid fa-arrow-right-long ms-1"></i>
           </Link>
         </div>
         <div className="row g-4">
           {popularCategories.map((cat, i) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={i}>
-              <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
+              <div className="glass-card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light animate__animated animate__fadeInUp">
                 <img src={cat.img} className="card-img-top p-3 rounded-4" alt="Category" />
                 <div className="card-body">
                   <h5 className="card-title fw-bold">{cat.name}</h5>
                   <Link
                     to={`/category/${cat.name.toLowerCase()}/${i + 1}`}
-                    className="btn btn-light w-100 rounded-pill"
+                    className="btn btn-glass btn-light w-100 rounded-pill"
                   >
                     View Category
                   </Link>

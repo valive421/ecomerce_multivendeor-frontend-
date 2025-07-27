@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
+import './liquidGlass.css';
 
 function Dashboard() {
   const customerId = localStorage.getItem("customer_id");
@@ -35,17 +36,17 @@ function Dashboard() {
   }, [customerId]);
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row">
-        {/* Sidebar */}
         <Sidebar />
-        {/* Main Content */}
         <div className="col-md-9">
           <div className="row g-4">
             <div className="col-12 col-md-4">
-              <div className="card shadow-sm border-0 text-center">
+              <div className="glass-card shadow-sm border-0 text-center animate__animated animate__fadeInDown">
                 <div className="card-body">
-                  <h5 className="card-title fw-bold">Total Orders</h5>
+                  <h5 className="card-title fw-bold text-gradient">
+                    <i className="fa-solid fa-bag-shopping me-2"></i> Total Orders
+                  </h5>
                   <Link to="/orders" className="fs-4 fw-bold text-primary text-decoration-none">
                     {dashboard.total_orders}
                   </Link>
@@ -53,9 +54,11 @@ function Dashboard() {
               </div>
             </div>
             <div className="col-12 col-md-4">
-              <div className="card shadow-sm border-0 text-center">
+              <div className="glass-card shadow-sm border-0 text-center animate__animated animate__fadeInDown">
                 <div className="card-body">
-                  <h5 className="card-title fw-bold">Total Wishlist</h5>
+                  <h5 className="card-title fw-bold text-gradient">
+                    <i className="fa-solid fa-heart me-2"></i> Total Wishlist
+                  </h5>
                   <Link to="/wishlist" className="fs-4 fw-bold text-primary text-decoration-none">
                     {dashboard.total_wishlist}
                   </Link>
@@ -63,9 +66,11 @@ function Dashboard() {
               </div>
             </div>
             <div className="col-12 col-md-4">
-              <div className="card shadow-sm border-0 text-center">
+              <div className="glass-card shadow-sm border-0 text-center animate__animated animate__fadeInDown">
                 <div className="card-body">
-                  <h5 className="card-title fw-bold">Total Addresses</h5>
+                  <h5 className="card-title fw-bold text-gradient">
+                    <i className="fa-solid fa-location-dot me-2"></i> Total Addresses
+                  </h5>
                   <Link to="/addresses" className="fs-4 fw-bold text-primary text-decoration-none">
                     {dashboard.total_addresses}
                   </Link>

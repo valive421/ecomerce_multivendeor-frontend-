@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
+import './liquidGlass.css';
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -76,21 +77,23 @@ function Orders() {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row">
         <Sidebar />
         <div className="col-12 col-md-9">
-          <div className="d-flex align-items-center justify-content-between mb-4">
-            <h2 className="mb-0">My Orders</h2>
-            <Link to="/products" className="btn btn-outline-success">
-              <i className="bi bi-plus-circle"></i> Shop More
+          <div className="glass-card d-flex align-items-center justify-content-between mb-4 px-4 py-3 animate__animated animate__fadeInDown">
+            <h2 className="mb-0 fw-bold text-gradient">
+              <i className="fa-solid fa-bag-shopping me-2"></i> My Orders
+            </h2>
+            <Link to="/products" className="btn btn-glass btn-outline-success">
+              <i className="fa-solid fa-plus-circle"></i> Shop More
             </Link>
           </div>
           {loading ? (
-            <div className="alert alert-info">Loading orders...</div>
+            <div className="alert alert-info glass-card">Loading orders...</div>
           ) : orders.length === 0 ? (
-            <div className="alert alert-warning text-center py-5">
-              <i className="bi bi-bag-x" style={{ fontSize: "2rem" }}></i>
+            <div className="alert alert-warning text-center py-5 glass-card">
+              <i className="fa fa-bag-x fa-2x mb-2"></i>
               <div className="mt-2">You have no orders yet.</div>
               <Link to="/products" className="btn btn-primary mt-3">
                 Start Shopping
@@ -98,7 +101,7 @@ function Orders() {
             </div>
           ) : (
             <>
-              <div className="table-responsive rounded shadow-sm">
+              <div className="table-responsive rounded shadow-sm glass-card animate__animated animate__fadeInUp">
                 <table className="table table-hover align-middle mb-0">
                   <thead className="table-light">
                     <tr>

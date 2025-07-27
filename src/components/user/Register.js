@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import {useState} from "react";
+import './liquidGlass.css';
 
 function Register() {
   const baseUrl = 'http://127.0.0.1:8000/api/';
@@ -72,48 +73,52 @@ const submitHandler = (event) => {
     (registerFormData.password !== '');
 
   return (
-    <div className="container py-5 d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
-      <div className="card shadow p-4" style={{ maxWidth: 400, width: "100%" }}>
-        {successMsg && <p className="alert alert-success">{successMsg}</p>}
-        <form>
-          {formError && (
-            <div className="alert alert-danger" role="alert">
-              {errorMsg}
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
+      <div className="row justify-content-center">
+        <div className="col-md-7 col-lg-6">
+          <div className="glass-card shadow p-4 animate__animated animate__fadeInDown">
+            {successMsg && <p className="alert alert-success">{successMsg}</p>}
+            <form>
+              {formError && (
+                <div className="alert alert-danger" role="alert">
+                  {errorMsg}
+                </div>
+              )}
+              {successMsg && (
+                <div className="alert alert-success" role="alert">
+                  {successMsg}
+                </div>
+              )}
+              <div className="mb-3">
+                <label className="form-label">First Name</label>
+                <input type="text" onChange={inputHandler} value={registerFormData.first_name} name="first_name" className="form-control" placeholder="Enter first name" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Last Name</label>
+                <input type="text" onChange={inputHandler} value={registerFormData.last_name} name="last_name" className="form-control" placeholder="Enter last name" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Username</label>
+                <input type="text" onChange={inputHandler} value={registerFormData.username} name="username" className="form-control" placeholder="Enter username" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Email address</label>
+                <input type="email" onChange={inputHandler} value={registerFormData.email} name="email" className="form-control" placeholder="Enter email" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">mobile no</label>
+                <input type="text" onChange={inputHandler} value={registerFormData.mobile} name="mobile" className="form-control" placeholder="Enter mobile no" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input type="password" onChange={inputHandler} value={registerFormData.password} name="password" className="form-control" placeholder="Enter password" />
+              </div>
+              <button type="submit" disabled={!buttonEnable} onClick={submitHandler} className="btn btn-primary w-100 mb-2">Register</button>
+            </form>
+            <div className="text-center">
+              Already have an account? <Link to="/login">Login</Link>
             </div>
-          )}
-          {successMsg && (
-            <div className="alert alert-success" role="alert">
-              {successMsg}
-            </div>
-          )}
-          <div className="mb-3">
-            <label className="form-label">First Name</label>
-            <input type="text" onChange={inputHandler} value={registerFormData.first_name} name="first_name" className="form-control" placeholder="Enter first name" />
           </div>
-          <div className="mb-3">
-            <label className="form-label">Last Name</label>
-            <input type="text" onChange={inputHandler} value={registerFormData.last_name} name="last_name" className="form-control" placeholder="Enter last name" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Username</label>
-            <input type="text" onChange={inputHandler} value={registerFormData.username} name="username" className="form-control" placeholder="Enter username" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Email address</label>
-            <input type="email" onChange={inputHandler} value={registerFormData.email} name="email" className="form-control" placeholder="Enter email" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">mobile no</label>
-            <input type="text" onChange={inputHandler} value={registerFormData.mobile} name="mobile" className="form-control" placeholder="Enter mobile no" />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input type="password" onChange={inputHandler} value={registerFormData.password} name="password" className="form-control" placeholder="Enter password" />
-          </div>
-          <button type="submit" disabled={!buttonEnable} onClick={submitHandler} className="btn btn-primary w-100 mb-2">Register</button>
-        </form>
-        <div className="text-center">
-          Already have an account? <Link to="/login">Login</Link>
         </div>
       </div>
     </div>

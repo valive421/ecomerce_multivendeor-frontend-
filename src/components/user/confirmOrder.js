@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext, CartContext } from '../context';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import './liquidGlass.css';
 
 function ConfirmOrder() {
   const userContext = useContext(UserContext);
@@ -118,173 +119,177 @@ function ConfirmOrder() {
   }
 
   return (
-    <div className="container py-5">
-      <h3 className="mb-4">Review & Place Order</h3>
-      <ul className="list-group mb-4">
-        {cartData.map((item, idx) => (
-          <li key={idx} className="list-group-item d-flex justify-content-between">
-            <div>{item.title} × {item.quantity || 1}</div>
-            <div>₹{(item.price || 0) * (item.quantity || 1)}</div>
-          </li>
-        ))}
-      </ul>
-      {paymentDone && (
-        <div className="container py-5">
-          <h3 className="mb-4">Payment Successful</h3>
-          <div className="alert alert-success">Your order and payment have been completed!</div>
-          <Link to="/orders" className="btn btn-primary">Go to My Orders</Link>
-        </div>
-      )}
-      {!orderPlaced && !paymentDone && (
-        <div className="d-flex justify-content-between mt-4">
-          <Link to="/checkout" className="btn btn-outline-primary">
-            Back to Cart
-          </Link>
-          <button
-            className="btn btn-success"
-            onClick={handlePlaceOrder}
-            disabled={placing || cartData.length === 0}
-          >
-            {placing ? "Placing Order..." : "Confirm & Place Order"}
-          </button>
-        </div>
-      )}
-      {orderPlaced && !paymentDone && (
-        <div className="mt-4">
-          <h5 className="mb-3">Choose Payment Method</h5>
-          <button className="btn btn-primary me-2" onClick={() => handlePayment("Razorpay")}>
-            Pay with Razorpay
-          </button>
-          <button className="btn btn-warning me-2" onClick={() => handlePayment("Paytm")}>
-            Pay with Paytm
-          </button>
-          <button className="btn btn-info text-white" onClick={() => setShowPaypal(true)} disabled={showPaypal}>
-            Pay with PayPal (Sandbox)
-          </button>
-          {showPaypal && (
-            <div className="mt-3" ref={paypalRef}>
-              <PayPalScriptProvider options={{ "client-id": "AbO-3I2Wg6U3W9TRTMVvu5OWhVNCx1dkYs8eDvWSqVDyfg2Li3lTYsN1wfmqRcmMGtJOryzo30Mtvl11", currency: "USD" }}>
-                <PayPalButtons
-                  createOrder={(data, actions) => {
-                    // Filter out items with zero or negative price or quantity
-                    const validItems = cartData
-                      .filter(item => Number(item.price) > 0 && Number(item.quantity || 1) > 0)
-                      .map(item => ({
-                        name: item.title || "Item",
-                        unit_amount: {
-                          currency_code: "USD",
-                          value: Number(item.price).toFixed(2)
-                        },
-                        quantity: String(item.quantity || 1)
-                      }));
-
-                    // Calculate item total
-                    const itemTotal = validItems.reduce(
-                      (sum, item) => sum + (parseFloat(item.unit_amount.value) * parseInt(item.quantity)),
-                      0
-                    );
-
-                    // Ensure value is a string, >= 1.00, max 2 decimals, no commas, no leading zeros
-                    let value = itemTotal.toFixed(2);
-                    if (isNaN(value) || Number(value) < 1) value = "1.00";
-                    value = value.replace(/^0+/, '').replace(/^\.|^$/, '1.00');
-
-                    // Debug: log value and items to console
-                    console.log("PayPal order value:", value, "items:", validItems);
-
-                    return actions.order.create({
-                      purchase_units: [
-                        {
-                          amount: {
-                            value: value,
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
+      <div className="glass-card mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+        <h3 className="mb-4 text-gradient">
+          <i className="fa-solid fa-clipboard-check me-2"></i> Review & Place Order
+        </h3>
+        <ul className="list-group mb-4">
+          {cartData.map((item, idx) => (
+            <li key={idx} className="list-group-item d-flex justify-content-between">
+              <div>{item.title} × {item.quantity || 1}</div>
+              <div>₹{(item.price || 0) * (item.quantity || 1)}</div>
+            </li>
+          ))}
+        </ul>
+        {paymentDone && (
+          <div className="container py-5">
+            <h3 className="mb-4">Payment Successful</h3>
+            <div className="alert alert-success">Your order and payment have been completed!</div>
+            <Link to="/orders" className="btn btn-primary">Go to My Orders</Link>
+          </div>
+        )}
+        {!orderPlaced && !paymentDone && (
+          <div className="d-flex justify-content-between mt-4">
+            <Link to="/checkout" className="btn btn-outline-primary">
+              Back to Cart
+            </Link>
+            <button
+              className="btn btn-success"
+              onClick={handlePlaceOrder}
+              disabled={placing || cartData.length === 0}
+            >
+              {placing ? "Placing Order..." : "Confirm & Place Order"}
+            </button>
+          </div>
+        )}
+        {orderPlaced && !paymentDone && (
+          <div className="mt-4">
+            <h5 className="mb-3">Choose Payment Method</h5>
+            <button className="btn btn-primary me-2" onClick={() => handlePayment("Razorpay")}>
+              Pay with Razorpay
+            </button>
+            <button className="btn btn-warning me-2" onClick={() => handlePayment("Paytm")}>
+              Pay with Paytm
+            </button>
+            <button className="btn btn-info text-white" onClick={() => setShowPaypal(true)} disabled={showPaypal}>
+              Pay with PayPal (Sandbox)
+            </button>
+            {showPaypal && (
+              <div className="mt-3" ref={paypalRef}>
+                <PayPalScriptProvider options={{ "client-id": "AbO-3I2Wg6U3W9TRTMVvu5OWhVNCx1dkYs8eDvWSqVDyfg2Li3lTYsN1wfmqRcmMGtJOryzo30Mtvl11", currency: "USD" }}>
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      // Filter out items with zero or negative price or quantity
+                      const validItems = cartData
+                        .filter(item => Number(item.price) > 0 && Number(item.quantity || 1) > 0)
+                        .map(item => ({
+                          name: item.title || "Item",
+                          unit_amount: {
                             currency_code: "USD",
-                            breakdown: {
-                              item_total: {
-                                currency_code: "USD",
-                                value: value
-                              }
-                            }
+                            value: Number(item.price).toFixed(2)
                           },
-                          items: validItems
-                        },
-                      ],
-                      application_context: {
-                        shipping_preference: "NO_SHIPPING"
-                      }
-                    });
-                  }}
-                  onApprove={async (data, actions) => {
-                    // If PayPal popup is stuck at "Things don’t appear to be working at the moment."
-                    // but you see 201 OK in the network tab, the issue is with the sandbox buyer account or PayPal sandbox itself.
-                    // Try the following:
-                    // 1. Make sure you are using a sandbox BUYER account (not your developer/business account).
-                    // 2. Log out of all PayPal accounts in your browser, then retry.
-                    // 3. Use a different sandbox buyer account from https://developer.paypal.com/dashboard/accounts.
-                    // 4. Clear browser cookies for sandbox.paypal.com and try again.
-                    // 5. If the issue persists, wait and try later (PayPal sandbox is sometimes unreliable).
+                          quantity: String(item.quantity || 1)
+                        }));
 
-                    // The code below is correct and will work if the sandbox account is valid and PayPal is not having issues.
-                    return actions.order.capture().then(async function(details) {
-                      setPaymentDone(true);
-                      alert("Payment successful via PayPal!");
-                      console.log("PayPal payment details:", details);
+                      // Calculate item total
+                      const itemTotal = validItems.reduce(
+                        (sum, item) => sum + (parseFloat(item.unit_amount.value) * parseInt(item.quantity)),
+                        0
+                      );
 
-                      if (backendOrderId) {
-                        try {
-                          // Ensure CSRF cookie is set before making PATCH request
-                          // Make a GET request to your backend to set the CSRF cookie if not already set
-                          function getCookie(name) {
-                            let cookieValue = null;
-                            if (document.cookie && document.cookie !== "") {
-                              const cookies = document.cookie.split(";");
-                              for (let i = 0; i < cookies.length; i++) {
-                                const cookie = cookies[i].trim();
-                                if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                  break;
+                      // Ensure value is a string, >= 1.00, max 2 decimals, no commas, no leading zeros
+                      let value = itemTotal.toFixed(2);
+                      if (isNaN(value) || Number(value) < 1) value = "1.00";
+                      value = value.replace(/^0+/, '').replace(/^\.|^$/, '1.00');
+
+                      // Debug: log value and items to console
+                      console.log("PayPal order value:", value, "items:", validItems);
+
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              value: value,
+                              currency_code: "USD",
+                              breakdown: {
+                                item_total: {
+                                  currency_code: "USD",
+                                  value: value
                                 }
                               }
-                            }
-                            return cookieValue;
-                          }
-                          let csrftoken = getCookie("csrftoken");
-                          if (!csrftoken) {
-                            // Make a GET request to set the CSRF cookie
-                            await fetch("http://127.0.0.1:8000/api/orders/", {
-                              method: "GET",
-                              credentials: "include",
-                            });
-                            csrftoken = getCookie("csrftoken");
-                          }
-
-                          await fetch(`http://127.0.0.1:8000/api/order-status/${backendOrderId}/`, {
-                            method: "PATCH",
-                            headers: {
-                              "Content-Type": "application/json",
-                              "X-CSRFToken": csrftoken,
                             },
-                            credentials: "include",
-                            body: JSON.stringify({ status: "Paid", paypal_id: details.id }),
-                          });
-                        } catch (err) {
-                          console.error("Failed to update order status in backend:", err);
+                            items: validItems
+                          },
+                        ],
+                        application_context: {
+                          shipping_preference: "NO_SHIPPING"
                         }
-                      } else {
-                        console.warn("No backendOrderId found, cannot update order status.");
-                      }
-                    });
-                  }}
-                  onError={(err) => {
-                    // Show a more helpful message for sandbox issues
-                    alert("PayPal payment failed. If you see 'Things don’t appear to be working at the moment.' in the PayPal window, make sure:\n\n- You are using a PayPal sandbox BUYER account (not your developer/business account)\n- The sandbox buyer account is confirmed and active\n- The PayPal sandbox is not experiencing issues (try again later)\n\nThis message is common in the sandbox if you use the wrong account or PayPal is having issues.");
-                    console.error("PayPal onError event:", err);
-                  }}
-                />
-              </PayPalScriptProvider>
-            </div>
-          )}
-        </div>
-      )}
+                      });
+                    }}
+                    onApprove={async (data, actions) => {
+                      // If PayPal popup is stuck at "Things don’t appear to be working at the moment."
+                      // but you see 201 OK in the network tab, the issue is with the sandbox buyer account or PayPal sandbox itself.
+                      // Try the following:
+                      // 1. Make sure you are using a sandbox BUYER account (not your developer/business account).
+                      // 2. Log out of all PayPal accounts in your browser, then retry.
+                      // 3. Use a different sandbox buyer account from https://developer.paypal.com/dashboard/accounts.
+                      // 4. Clear browser cookies for sandbox.paypal.com and try again.
+                      // 5. If the issue persists, wait and try later (PayPal sandbox is sometimes unreliable).
+
+                      // The code below is correct and will work if the sandbox account is valid and PayPal is not having issues.
+                      return actions.order.capture().then(async function(details) {
+                        setPaymentDone(true);
+                        alert("Payment successful via PayPal!");
+                        console.log("PayPal payment details:", details);
+
+                        if (backendOrderId) {
+                          try {
+                            // Ensure CSRF cookie is set before making PATCH request
+                            // Make a GET request to your backend to set the CSRF cookie if not already set
+                            function getCookie(name) {
+                              let cookieValue = null;
+                              if (document.cookie && document.cookie !== "") {
+                                const cookies = document.cookie.split(";");
+                                for (let i = 0; i < cookies.length; i++) {
+                                  const cookie = cookies[i].trim();
+                                  if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                  }
+                                }
+                              }
+                              return cookieValue;
+                            }
+                            let csrftoken = getCookie("csrftoken");
+                            if (!csrftoken) {
+                              // Make a GET request to set the CSRF cookie
+                              await fetch("http://127.0.0.1:8000/api/orders/", {
+                                method: "GET",
+                                credentials: "include",
+                              });
+                              csrftoken = getCookie("csrftoken");
+                            }
+
+                            await fetch(`http://127.0.0.1:8000/api/order-status/${backendOrderId}/`, {
+                              method: "PATCH",
+                              headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": csrftoken,
+                              },
+                              credentials: "include",
+                              body: JSON.stringify({ status: "Paid", paypal_id: details.id }),
+                            });
+                          } catch (err) {
+                            console.error("Failed to update order status in backend:", err);
+                          }
+                        } else {
+                          console.warn("No backendOrderId found, cannot update order status.");
+                        }
+                      });
+                    }}
+                    onError={(err) => {
+                      // Show a more helpful message for sandbox issues
+                      alert("PayPal payment failed. If you see 'Things don’t appear to be working at the moment.' in the PayPal window, make sure:\n\n- You are using a PayPal sandbox BUYER account (not your developer/business account)\n- The sandbox buyer account is confirmed and active\n- The PayPal sandbox is not experiencing issues (try again later)\n\nThis message is common in the sandbox if you use the wrong account or PayPal is having issues.");
+                      console.error("PayPal onError event:", err);
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

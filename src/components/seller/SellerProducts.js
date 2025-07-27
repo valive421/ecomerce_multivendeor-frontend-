@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
+import './liquidGlass.css'; // Add this import at the top
 
 function SellerProducts() {
   const [products, setProducts] = useState([]);

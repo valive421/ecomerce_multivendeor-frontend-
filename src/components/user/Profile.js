@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Sidebar from "../common/Sidebar";
-import axios from "axios";
+import './liquidGlass.css';
+
 function Profile() {
   const [profile, setProfile] = useState({
     firstName: "",
@@ -88,14 +89,27 @@ function Profile() {
   }
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row">
         <Sidebar />
-        <div className="col-md-9 d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
-          <div className="card shadow p-4" style={{ maxWidth: 400, width: "100%" }}>
-            <h2 className="mb-4 text-center"><i className="fa fa-user me-2"></i>Profile</h2>
+        <div className="col-md-9 d-flex flex-column align-items-center">
+          <div className="glass-card shadow p-4 animate__animated animate__fadeInDown" style={{ maxWidth: 600, width: "100%" }}>
+            <h2 className="mb-4 text-center text-gradient">
+              <i className="fa fa-user me-2"></i>Profile
+            </h2>
             <div className="text-center mb-3">
-              <img src={profile.profilePic || "/default-profile.png"} alt="Profile" className="rounded-circle mb-2" style={{ width: 100, height: 100, objectFit: "cover" }} />
+              <img
+                src={profile.profilePic || "/default-profile.png"}
+                alt="Profile"
+                className="rounded-circle mb-2"
+                style={{
+                  width: 110,
+                  height: 110,
+                  objectFit: "cover",
+                  border: "4px solid #e0e7ff",
+                  boxShadow: "0 2px 12px rgba(37,99,235,0.12)"
+                }}
+              />
             </div>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
@@ -126,6 +140,7 @@ function Profile() {
                   className="form-control"
                   ref={fileInputRef}
                   onChange={handleImageChange}
+                  disabled={!edit}
                 />
               </div>
               {edit ? (

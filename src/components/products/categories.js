@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from '../../logo.svg'; // fixed path
 import { Link } from 'react-router-dom';
+import './liquidGlass.css';
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -41,19 +42,24 @@ function Categories() {
   };
 
   return (
-    <div>
-      <h1>categories list</h1>
-      <div className="d-flex justify-content-between align-items-center mt-5 mb-4"></div>
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
+      <div className="glass-card mb-4 px-4 py-4 animate__animated animate__fadeInDown d-flex align-items-center justify-content-between">
+        <h1 className="mb-0 fw-bold text-gradient" style={{ letterSpacing: "1px" }}>
+          <i className="fa-solid fa-layer-group me-2"></i> Categories List
+        </h1>
+        <i className="fa-solid fa-layer-group fa-2x text-primary animate__animated animate__pulse animate__infinite"></i>
+      </div>
       <div className="row g-4">
         {categories.map((cat, i) => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={cat.id}>
-            <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
-              <img src={logo} className="card-img-top p-3 rounded-4" alt="Category" />
-              <div className="card-body">
-                <h5 className="card-title fw-bold">{cat.title}</h5>
+            <div className="glass-card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light animate__animated animate__fadeInUp"
+              style={{ minHeight: 320, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <img src={logo} className="card-img-top p-3 rounded-4" alt="Category" style={{ height: 120, objectFit: "contain" }} />
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title fw-bold text-gradient">{cat.title}</h5>
                 <p className="card-text">{cat.detail}</p>
-                <Link to={`/category/${cat.title.toLowerCase()}/${cat.id}`} className="btn btn-light w-100 rounded-pill">
-                  View Category
+                <Link to={`/category/${cat.title.toLowerCase()}/${cat.id}`} className="btn btn-glass btn-light w-100 rounded-pill mt-auto">
+                  <i className="fa-solid fa-eye me-1"></i> View Category
                 </Link>
               </div>
             </div>
@@ -63,16 +69,16 @@ function Categories() {
       {/* Pagination */}
       <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-glass btn-outline-primary"
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage === 1 || loading}
         >
-          Previous
+          <i className="fa fa-chevron-left"></i> Previous
         </button>
         {[...Array(totalPages)].map((_, idx) => (
           <button
             key={idx + 1}
-            className={`btn ${currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"}`}
+            className={`btn btn-glass ${currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"}`}
             onClick={() => handlePageClick(idx + 1)}
             disabled={loading}
           >
@@ -80,11 +86,11 @@ function Categories() {
           </button>
         ))}
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-glass btn-outline-primary"
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage === totalPages || loading}
         >
-          Next
+          Next <i className="fa fa-chevron-right"></i>
         </button>
       </div>
     </div>

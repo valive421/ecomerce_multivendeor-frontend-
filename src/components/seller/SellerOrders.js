@@ -4,6 +4,7 @@ import Sidebar from './SellerSidebar';
 // import { CheckCircle, Loader} from 'react-feather';
 import { useState, useEffect, useRef } from 'react';
 // import { CurrencyContext } from "../../context";
+import './liquidGlass.css'; // Add this import at the top
 function SellerOrders() {
     const [OrderItems, setOrderItems] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);

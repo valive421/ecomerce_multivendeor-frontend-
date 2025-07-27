@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CartContext, WishlistContext } from '../context';
+import './liquidGlass.css';
 
 function ProductDetail() {
   const { product_id } = useParams();
@@ -118,11 +119,11 @@ function ProductDetail() {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row g-5 align-items-start">
         {/* Product Info */}
         <div className="col-md-5">
-          <div className="card shadow-sm border-0 rounded-4 mb-3">
+          <div className="glass-card shadow-sm border-0 rounded-4 mb-3 animate__animated animate__fadeInDown">
             {totalImages > 0 ? (
               <div className="position-relative">
                 <img
@@ -225,7 +226,7 @@ function ProductDetail() {
             </div>
           </div>
 
-          <div className="card border-0 shadow-sm rounded-4 mt-4">
+          <div className="glass-card border-0 shadow-sm rounded-4 mt-4 animate__animated animate__fadeInUp">
             <div className="card-header bg-secondary text-white fw-bold rounded-top-4">
               Vendor Info
             </div>
@@ -247,7 +248,7 @@ function ProductDetail() {
 
         {/* Ratings and Metadata */}
         <div className="col-md-7">
-          <div className="card border-0 shadow-sm rounded-4 mb-3">
+          <div className="glass-card border-0 shadow-sm rounded-4 mb-3 animate__animated animate__fadeInDown">
             <div className="card-body">
               <h5 className="card-title mb-3">
                 <span className="badge bg-info text-dark fs-5 px-3 py-2">Customer Reviews</span>
@@ -290,7 +291,7 @@ function ProductDetail() {
             </div>
           </div>
 
-          <div className="card border-0 shadow-sm rounded-4 mt-4">
+          <div className="glass-card border-0 shadow-sm rounded-4 mt-4 animate__animated animate__fadeInUp">
             <div className="card-header bg-dark text-white fw-bold rounded-top-4">
               Product Meta Info
             </div>
@@ -316,7 +317,7 @@ function ProductDetail() {
 
       {/* Related Products */}
       <div className="mt-5 pt-4 border-top">
-        <h4 className="mb-4">Related Products</h4>
+        <h4 className="mb-4 text-gradient"><i className="fa-solid fa-link me-2"></i>Related Products</h4>
         {relatedLoading ? (
           <div>Loading related products...</div>
         ) : (
@@ -325,7 +326,7 @@ function ProductDetail() {
               {relatedProducts.length === 0 && <div>No related products found.</div>}
               {relatedProducts.map((prod) => (
                 <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={prod.id}>
-                  <div className="card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light">
+                  <div className="glass-card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light animate__animated animate__fadeInUp">
                     <img
                       src={prod.logo || "https://via.placeholder.com/400x300?text=No+Image"}
                       className="card-img-top p-3 rounded-4"

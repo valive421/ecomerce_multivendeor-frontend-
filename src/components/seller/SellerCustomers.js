@@ -4,6 +4,9 @@ import {Link} from 'react-router-dom';
 // import { Trash2, Truck} from 'react-feather';
 import Sidebar from './SellerSidebar';
 import { useState,useEffect } from 'react';
+// Add glassmorphism CSS
+import './liquidGlass.css'; // <-- create this file in the same folder
+
 function SellerCustomers(){
     const baseUrl = 'http://127.0.0.1:8000/';
     const vendorId = localStorage.getItem('seller_id');
@@ -53,45 +56,59 @@ function SellerCustomers(){
 
     // Fetch orders for a customer for this vendor
     async function handleShowOrders(customer) {
-        // Use backend endpoint for vendor-customer orders
-        const res = await fetch(`${baseUrl}api/vendor/${vendorId}/customer/${customer.customer.id}/orders/`);
-        const data = await res.json();
-        setShowOrders({ show: true, orders: data.results || [], customer });
+        try {
+            const res = await fetch(`${baseUrl}api/vendor/${vendorId}/customer/${customer.customer.id}/orders/`);
+            if (!res.ok) {
+                throw new Error("Failed to fetch orders");
+            }
+            const data = await res.json();
+            setShowOrders({ show: true, orders: data.results || [], customer });
+        } catch (error) {
+            setShowOrders({ show: true, orders: [], customer });
+            console.error("Failed to fetch orders:", error);
+        }
     }
 
     const closeOrdersModal = () => setShowOrders({ show: false, orders: [], customer: null });
 
     return (
-        <div className="container py-5" style={{ minHeight: "100vh" }}>
+        <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
             <div className="row">
                 <Sidebar />
-                <div className="col-md-9">
-                    <h2 className="mb-4">Customers</h2>
-                    <div className="table-responsive">
-                        <table className="table table-bordered align-middle">
+                <div className="col-md-9 d-flex flex-column align-items-center">
+                    <div className="glass-card w-100 mb-4 d-flex align-items-center justify-content-between px-4 py-3 animate__animated animate__fadeInDown">
+                        <h2 className="mb-0 fw-bold text-gradient">
+                            <i className="fa-solid fa-users me-2"></i> Customers
+                        </h2>
+                        <i className="fa-solid fa-user-group fa-2x text-primary animate__animated animate__pulse animate__infinite"></i>
+                    </div>
+                    <div className="table-responsive glass-card animate__animated animate__fadeInUp" style={{ boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)" }}>
+                        <table className="table table-borderless align-middle mb-0">
                             <thead className="table-light">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col"><i className="fa-solid fa-user"></i> Name</th>
+                                    <th scope="col"><i className="fa-solid fa-envelope"></i> Email</th>
+                                    <th scope="col"><i className="fa-solid fa-phone"></i> Phone</th>
+                                    <th scope="col"><i className="fa-solid fa-list"></i> Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {CustomerList.map((item, index) => (
-                                    <tr key={item.customer.id}>
+                                    <tr key={item.customer.id} className="animate__animated animate__fadeInUp">
                                         <th scope="row">{index + 1}</th>
-                                        <td>{item.user.username}</td>
+                                        <td>
+                                            <span className="fw-semibold text-gradient">{item.user.username}</span>
+                                        </td>
                                         <td>{item.user.email}</td>
                                         <td>{item.customer.mobile}</td>
                                         <td>
                                             <button
-                                                className="btn btn-success border-0 ms-2"
+                                                className="btn btn-glass btn-success border-0 ms-2 animate__animated animate__pulse animate__infinite"
                                                 title="Orders"
                                                 onClick={() => handleShowOrders(item)}
                                             >
-                                                🛒 Orders
+                                                <i className="fa-solid fa-bag-shopping me-1"></i> Orders
                                             </button>
                                         </td>
                                     </tr>
@@ -108,16 +125,17 @@ function SellerCustomers(){
                             role="dialog"
                         >
                             <div className="modal-dialog modal-lg" role="document">
-                                <div className="modal-content">
+                                <div className="modal-content glass-card animate__animated animate__zoomIn">
                                     <div className="modal-header">
-                                        <h5 className="modal-title">
+                                        <h5 className="modal-title text-gradient">
+                                            <i className="fa-solid fa-bag-shopping me-2"></i>
                                             Orders for {showOrders.customer.user.username}
                                         </h5>
                                         <button type="button" className="btn-close" onClick={closeOrdersModal}></button>
                                     </div>
                                     <div className="modal-body">
                                         {showOrders.orders.length === 0 ? (
-                                            <div className="alert alert-info">No orders found for this customer.</div>
+                                            <div className="alert alert-info glass-card">No orders found for this customer.</div>
                                         ) : (
                                             <div className="table-responsive">
                                                 <table className="table table-bordered align-middle">
@@ -134,10 +152,30 @@ function SellerCustomers(){
                                                         {showOrders.orders.map((order, idx) => (
                                                             <tr key={order.id}>
                                                                 <td>{idx + 1}</td>
-                                                                <td>{order.product && order.product.title}</td>
+                                                                <td>
+                                                                    <span className="fw-semibold text-gradient">
+                                                                        <i className="fa-solid fa-cube me-1"></i>
+                                                                        {order.product && order.product.title}
+                                                                    </span>
+                                                                </td>
                                                                 <td>{order.qty}</td>
-                                                                <td>{order.price}</td>
-                                                                <td>{order.order && order.order.order_status}</td>
+                                                                <td>
+                                                                    <span className="badge bg-info text-dark fs-6">
+                                                                        <i className="fa-solid fa-indian-rupee-sign"></i> {order.price}
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span className={`badge fs-6 px-3 py-2 ${order.order && order.order.order_status === "Complete"
+                                                                        ? "bg-success"
+                                                                        : order.order && order.order.order_status === "Sent"
+                                                                        ? "bg-warning text-dark"
+                                                                        : order.order && order.order.order_status === "Approve"
+                                                                        ? "bg-primary"
+                                                                        : "bg-secondary"
+                                                                    }`}>
+                                                                        {order.order && order.order.order_status ? String(order.order.order_status) : "Pending"}
+                                                                    </span>
+                                                                </td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
@@ -146,7 +184,9 @@ function SellerCustomers(){
                                         )}
                                     </div>
                                     <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" onClick={closeOrdersModal}>Close</button>
+                                        <button type="button" className="btn btn-glass btn-secondary" onClick={closeOrdersModal}>
+                                            <i className="fa-solid fa-xmark"></i> Close
+                                        </button>
                                     </div>
                                 </div>
                             </div>
