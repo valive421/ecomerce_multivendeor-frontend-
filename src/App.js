@@ -39,6 +39,8 @@ import SellerLogout from './components/seller/SellerLogout';
 import SellerAddProduct from './components/seller/SellerAddProduct';
 import Sellerchangepass from './components/seller/ChangePassword';
 import SellerEditProduct from './components/seller/SellerEditProduct';
+import Sellers from "./components/common/Sellers";
+import VendorProducts from "./components/common/VendorProducts";
 const checkCart = localStorage.getItem('cart');
 const checkWishlist = localStorage.getItem('wishlist');
 function App() {
@@ -133,6 +135,8 @@ function App() {
             <Route path='/seller/products/add' element={<SellerAddProduct />} />
             <Route path='/seller/products/edit/:id' element={<SellerEditProduct />} />
             <Route path='/seller/changepassword' element={<Sellerchangepass />} />
+            <Route path="/sellers" element={<Sellers />} />
+            <Route path="/vendor/:vendorId/products" element={<VendorProducts />} />
           </Routes>
           <Footer />
         </WishlistContext.Provider>

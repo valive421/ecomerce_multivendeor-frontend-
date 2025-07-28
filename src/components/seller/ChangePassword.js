@@ -7,14 +7,43 @@ function SellerChangePassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (newPassword === confirmPassword && newPassword.length > 0) {
-      setSuccess(true);
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+    setSuccess(false);
+    setErrorMsg("");
+    if (newPassword !== confirmPassword || newPassword.length === 0) {
+      setErrorMsg("Passwords do not match or are empty.");
+      return;
+    }
+    const vendorId = localStorage.getItem("seller_id");
+    if (!vendorId) {
+      setErrorMsg("No vendor id found. Please login again.");
+      return;
+    }
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/vendor/change-password/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          vendor_id: vendorId,
+          old_password: oldPassword,
+          new_password: newPassword,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuccess(true);
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setErrorMsg("");
+      } else {
+        setErrorMsg(data.error || "Password change failed.");
+      }
+    } catch {
+      setErrorMsg("Password change failed.");
     }
   }
 
@@ -26,6 +55,7 @@ function SellerChangePassword() {
           <div className="card shadow p-4" style={{ maxWidth: 400, width: "100%" }}>
             <h2 className="mb-4 text-center"><i className="fa fa-key me-2"></i>Change Password</h2>
             {success && <div className="alert alert-success">Password changed successfully!</div>}
+            {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Old Password</label>

@@ -7,14 +7,43 @@ function ChangePassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (newPassword === confirmPassword && newPassword.length > 0) {
-      setSuccess(true);
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+    setSuccess(false);
+    setErrorMsg("");
+    if (newPassword !== confirmPassword || newPassword.length === 0) {
+      setErrorMsg("Passwords do not match or are empty.");
+      return;
+    }
+    const customerId = localStorage.getItem("customer_id");
+    if (!customerId) {
+      setErrorMsg("No customer id found. Please login again.");
+      return;
+    }
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/customer/change-password/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer_id: customerId,
+          old_password: oldPassword,
+          new_password: newPassword,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuccess(true);
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setErrorMsg("");
+      } else {
+        setErrorMsg(data.error || "Password change failed.");
+      }
+    } catch {
+      setErrorMsg("Password change failed.");
     }
   }
 
@@ -26,6 +55,7 @@ function ChangePassword() {
           <div className="glass-card shadow p-4 animate__animated animate__fadeInDown" style={{ maxWidth: 500, width: "100%" }}>
             <h2 className="mb-4 text-center text-gradient"><i className="fa fa-key me-2"></i>Change Password</h2>
             {success && <div className="alert alert-success glass-card">Password changed successfully!</div>}
+            {errorMsg && <div className="alert alert-danger glass-card">{errorMsg}</div>}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Old Password</label>

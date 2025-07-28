@@ -17,11 +17,46 @@ function ProductDetail() {
   const [relatedPageSize, setRelatedPageSize] = useState(8);
   const [cartData, setCartData] = useContext(CartContext);
   const [wishlistData, setWishlistData] = useContext(WishlistContext);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+  const [reviewSuccess, setReviewSuccess] = useState("");
+
   // Fetch main product by ID
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/api/product/${product_id}/`)
       .then((res) => res.json())
-      .then((data) => setProduct(data));
+      .then(async (data) => {
+        // Fetch profile pictures for each customer in product_ratings
+        if (Array.isArray(data.product_ratings)) {
+          const ratingsWithPP = await Promise.all(
+            data.product_ratings.map(async (ratingStr) => {
+              // Try to extract customer_id from rating string if backend provides it, else skip
+              // If backend provides product_ratings as objects, use rating.customer.id
+              // Here, we assume backend returns product_ratings as objects with customer info
+              if (typeof ratingStr === "object" && ratingStr.customer && ratingStr.customer.id) {
+                // Fetch profile picture for this customer
+                try {
+                  const res = await fetch(`http://127.0.0.1:8000/api/customer/${ratingStr.customer.id}/`);
+                  const customerData = await res.json();
+                  let pp = "";
+                  if (Array.isArray(customerData.profilepic) && customerData.profilepic.length > 0) {
+                    pp = customerData.profilepic[0].image;
+                  }
+                  return { ...ratingStr, customer_pp: pp };
+                } catch {
+                  return { ...ratingStr, customer_pp: "" };
+                }
+              }
+              // If not object, just return as is
+              return ratingStr;
+            })
+          );
+          data.product_ratings = ratingsWithPP;
+        }
+        setProduct(data);
+      });
   }, [product_id]);
 
   // Recursively fetch all related products from paginated endpoint
@@ -118,77 +153,138 @@ function ProductDetail() {
     }
   };
 
+  // Post review handler
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    setReviewLoading(true);
+    setReviewError("");
+    setReviewSuccess("");
+    if (!reviewText || !reviewStars) {
+      setReviewError("Please enter review text and select a rating.");
+      setReviewLoading(false);
+      return;
+    }
+    // Get customer_id from localStorage
+    const customerId = localStorage.getItem("customer_id");
+    if (!customerId) {
+      setReviewError("You must be logged in as a customer to post a review.");
+      setReviewLoading(false);
+      return;
+    }
+    fetch(`http://127.0.0.1:8000/api/product/${product_id}/add_review/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        review: reviewText,
+        rating: reviewStars,
+        customer_id: customerId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setReviewSuccess("Review submitted successfully!");
+          setReviewText("");
+          setReviewStars(0);
+          // Optionally, reload product to show new review
+          fetch(`http://127.0.0.1:8000/api/product/${product_id}/`)
+            .then((res) => res.json())
+            .then((data) => setProduct(data));
+        } else {
+          setReviewError(data.error || "Failed to submit review.");
+        }
+      })
+      .catch(() => setReviewError("Failed to submit review."))
+      .finally(() => setReviewLoading(false));
+  };
+
   return (
     <div className="container py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="row g-5 align-items-start">
         {/* Product Info */}
         <div className="col-md-5">
           <div className="glass-card shadow-sm border-0 rounded-4 mb-3 animate__animated animate__fadeInDown">
-            {totalImages > 0 ? (
-              <div className="position-relative">
+            <div className="position-relative">
+              {totalImages > 0 ? (
+                <>
+                  <img
+                    src={images[currentImg].image || "https://via.placeholder.com/400x300?text=No+Image"}
+                    alt={product.title + " " + (currentImg + 1)}
+                    className="d-block w-100 rounded-4"
+                    style={{ height: "320px", objectFit: "cover", border: "2px solid #e3e3e3" }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
+                    }}
+                  />
+                  <button
+                    className="btn btn-light position-absolute top-50 start-0 translate-middle-y shadow"
+                    disabled={currentImg === 0}
+                    onClick={() => setCurrentImg((i) => Math.max(i - 1, 0))}
+                    style={{ zIndex: 2 }}
+                  >
+                    <span className="fa fa-chevron-left"></span>
+                  </button>
+                  <button
+                    className="btn btn-light position-absolute top-50 end-0 translate-middle-y shadow"
+                    disabled={currentImg === totalImages - 1}
+                    onClick={() => setCurrentImg((i) => Math.min(i + 1, totalImages - 1))}
+                    style={{ zIndex: 2 }}
+                  >
+                    <span className="fa fa-chevron-right"></span>
+                  </button>
+                  <div className="d-flex justify-content-center mt-2">
+                    {images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img.image}
+                        alt={`thumb-${idx}`}
+                        className={`rounded-2 mx-1 border ${idx === currentImg ? "border-primary" : "border-light"}`}
+                        style={{
+                          width: 40,
+                          height: 40,
+                          objectFit: "cover",
+                          cursor: "pointer",
+                          boxShadow: idx === currentImg ? "0 0 0 2px #0d6efd" : "none"
+                        }}
+                        onClick={() => setCurrentImg(idx)}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
                 <img
-                  src={images[currentImg].image || "https://via.placeholder.com/400x300?text=No+Image"}
-                  alt={product.title + " " + (currentImg + 1)}
-                  className="d-block w-100 rounded-4"
-                  style={{ height: "300px", objectFit: "cover" }}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
-                  }}
+                  src="https://via.placeholder.com/400x300?text=No+Image"
+                  alt={product.title}
+                  className="card-img-top rounded-4"
+                  style={{ height: "320px", objectFit: "cover", border: "2px solid #e3e3e3" }}
                 />
-                <button
-                  className="btn btn-light position-absolute top-50 start-0 translate-middle-y"
-                  disabled={currentImg === 0}
-                  onClick={() => setCurrentImg((i) => Math.max(i - 1, 0))}
-                >
-                  <span className="fa fa-chevron-left"></span>
-                </button>
-                <button
-                  className="btn btn-light position-absolute top-50 end-0 translate-middle-y"
-                  disabled={currentImg === totalImages - 1}
-                  onClick={() => setCurrentImg((i) => Math.min(i + 1, totalImages - 1))}
-                >
-                  <span className="fa fa-chevron-right"></span>
-                </button>
-                <div className="d-flex justify-content-center mt-2">
-                  {images.map((_, idx) => (
-                    <button
-                      key={idx}
-                      className={`btn btn-sm mx-1 ${
-                        idx === currentImg ? "btn-primary" : "btn-outline-secondary"
-                      }`}
-                      style={{ borderRadius: "50%", width: "16px", height: "16px", padding: 0 }}
-                      onClick={() => setCurrentImg(idx)}
-                    ></button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <img
-                src="https://via.placeholder.com/400x300?text=No+Image"
-                alt={product.title}
-                className="card-img-top rounded-4"
-                style={{ height: "300px", objectFit: "cover" }}
-              />
-            )}
+              )}
+            </div>
             <div className="card-body">
-              <h2 className="fw-bold mb-2">{product.title}</h2>
+              <h2 className="fw-bold mb-2 text-gradient">{product.title}</h2>
               {product.category && (
                 <Link
                   to={`/category/${product.category.title.replace(/\s+/g, "-").toLowerCase()}/${product.category.id}`}
-                  className="badge bg-primary mb-2 text-decoration-none"
+                  className="badge bg-primary mb-2 text-decoration-none fs-6"
                 >
+                  <i className="fa-solid fa-layer-group me-1"></i>
                   {product.category.title}
                 </Link>
               )}
               <h5 className="mb-2 text-muted">
-                ID: <span className="badge bg-secondary">{product.id}</span>
+                <span className="badge bg-secondary">ID: {product.id}</span>
               </h5>
-              <h3 className="text-success mb-3">${product.price}</h3>
+              <h3 className="text-success mb-3 fw-bold">
+                <i className="fa-solid fa-indian-rupee-sign me-1"></i>
+                {product.price}
+              </h3>
               {/* Show sells if present */}
               {typeof product.sells !== "undefined" && (
                 <div className="mb-2">
-                  <span className="badge bg-warning text-dark">
+                  <span className="badge bg-warning text-dark fs-6">
                     <i className="fa-solid fa-fire me-1"></i>
                     Sold: {product.sells}
                   </span>
@@ -197,7 +293,7 @@ function ProductDetail() {
               <div className="mb-3 d-flex flex-wrap gap-2">
                 {!CartButtonClick ? (
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary btn-lg rounded-pill px-4"
                     onClick={cartbuttonhandler}
                   >
                     <i className="fa-solid fa-cart-plus me-1"></i>
@@ -205,7 +301,7 @@ function ProductDetail() {
                   </button>
                 ) : (
                   <button
-                    className="btn btn-danger"
+                    className="btn btn-danger btn-lg rounded-pill px-4"
                     onClick={cartremovehandler}
                   >
                     <i className="fa-solid fa-cart-arrow-down me-1"></i>
@@ -213,14 +309,14 @@ function ProductDetail() {
                   </button>
                 )}
                 <button
-                  className={`btn btn-outline-danger ${inWishlist ? "active" : ""}`}
+                  className={`btn btn-outline-danger btn-lg rounded-pill px-4 ${inWishlist ? "active" : ""}`}
                   onClick={wishlistHandler}
                 >
                   <i className={`fa${inWishlist ? "s" : "r"} fa-heart me-1`}></i>
                   {inWishlist ? "Wishlisted" : "Add to Wishlist"}
                 </button>
               </div>
-              <p className="mb-2">
+              <p className="mb-2 fs-5">
                 <strong>Description:</strong> {product.detail}
               </p>
             </div>
@@ -231,12 +327,14 @@ function ProductDetail() {
               Vendor Info
             </div>
             <div className="card-body">
-              {product.vendor ? (
+              {product.vendor && product.vendor.user ? (
                 <table className="table table-sm table-borderless mb-0">
                   <tbody>
-                    <tr><td>ID:</td><td>{product.vendor.id}</td></tr>
-                    <tr><td>Address:</td><td>{product.vendor.address}</td></tr>
-                    <tr><td>User:</td><td>{product.vendor.user}</td></tr>
+                    <tr><td className="fw-bold">ID:</td><td>{product.vendor.user?.id}</td></tr>
+                    <tr><td className="fw-bold">Username:</td><td>{product.vendor.user?.username}</td></tr>
+                    <tr><td className="fw-bold">First Name:</td><td>{product.vendor.user?.first_name}</td></tr>
+                    <tr><td className="fw-bold">Last Name:</td><td>{product.vendor.user?.last_name}</td></tr>
+                    <tr><td className="fw-bold">Address:</td><td>{product.vendor.address}</td></tr>
                   </tbody>
                 </table>
               ) : (
@@ -245,7 +343,6 @@ function ProductDetail() {
             </div>
           </div>
         </div>
-
         {/* Ratings and Metadata */}
         <div className="col-md-7">
           <div className="glass-card border-0 shadow-sm rounded-4 mb-3 animate__animated animate__fadeInDown">
@@ -253,19 +350,75 @@ function ProductDetail() {
               <h5 className="card-title mb-3">
                 <span className="badge bg-info text-dark fs-5 px-3 py-2">Customer Reviews</span>
               </h5>
+              {/* Review Form */}
+              <form className="mb-4 glass-card p-3" style={{ background: "#f8f9fa" }} onSubmit={handleReviewSubmit}>
+                <div className="mb-2">
+                  <label className="form-label fw-bold">Your Review</label>
+                  <textarea
+                    className="form-control"
+                    rows={2}
+                    value={reviewText}
+                    onChange={e => setReviewText(e.target.value)}
+                    placeholder="Write your review..."
+                    required
+                  />
+                </div>
+                <div className="mb-2">
+                  <label className="form-label fw-bold me-2">Your Rating:</label>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <i
+                      key={star}
+                      className={`fa-star fa-lg me-1 ${reviewStars >= star ? "fa-solid text-warning" : "fa-regular text-warning"}`}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setReviewStars(star)}
+                    ></i>
+                  ))}
+                </div>
+                {reviewError && <div className="alert alert-danger py-1">{reviewError}</div>}
+                {reviewSuccess && <div className="alert alert-success py-1">{reviewSuccess}</div>}
+                <button className="btn btn-primary rounded-pill px-4" type="submit" disabled={reviewLoading}>
+                  {reviewLoading ? "Submitting..." : "Submit Review"}
+                </button>
+              </form>
               <ul className="list-group list-group-flush">
                 {product.product_ratings && product.product_ratings.length > 0 ? (
                   product.product_ratings.map((rating, idx) => {
-                    const match = rating.match(/-(\d+)$/);
-                    const stars = match ? parseInt(match[1], 10) : 0;
-                    const text = match ? rating.replace(/-\d+$/, "") : rating;
+                    // If backend returns object, use fields; else fallback to string parsing
+                    let stars = 0, text = "", customerPP = "", customerName = "";
+                    if (typeof rating === "object") {
+                      stars = rating.rating || 0;
+                      text = rating.reviews || "";
+                      // Try to get profile pic from nested customer.profilepic
+                      if (rating.customer && Array.isArray(rating.customer.profilepic) && rating.customer.profilepic.length > 0) {
+                        customerPP = rating.customer.profilepic[0].image;
+                      }
+                      customerName = rating.customer?.user?.first_name || rating.customer?.user?.username || "Customer";
+                    } else {
+                      const match = rating.match(/-(\d+)$/);
+                      stars = match ? parseInt(match[1], 10) : 0;
+                      text = match ? rating.replace(/-\d+$/, "") : rating;
+                    }
                     return (
                       <li
                         className="list-group-item d-flex align-items-center bg-light rounded-3 shadow-sm mb-2"
                         key={idx}
                       >
-                        <i className="fa-solid fa-comment-dots me-2 text-primary fs-4"></i>
-                        <span className="flex-grow-1">{text}</span>
+                        {customerPP ? (
+                          <img
+                            src={customerPP}
+                            alt="Customer"
+                            className="rounded-circle me-3"
+                            style={{ width: 44, height: 44, objectFit: "cover", border: "2px solid #0d6efd" }}
+                          />
+                        ) : (
+                          <div className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style={{ width: 44, height: 44, fontWeight: 700 }}>
+                            <i className="fa fa-user"></i>
+                          </div>
+                        )}
+                        <div className="flex-grow-1">
+                          <span className="fw-bold me-2">{customerName}</span>
+                          <span>{text}</span>
+                        </div>
                         <span className="ms-2">
                           {[...Array(5)].map((_, i) => (
                             <i
@@ -298,15 +451,15 @@ function ProductDetail() {
             <div className="card-body">
               <table className="table table-sm table-striped mb-0">
                 <tbody>
-                  <tr><td>ID</td><td>{product.id}</td></tr>
-                  <tr><td>Title</td><td>{product.title}</td></tr>
-                  <tr><td>Detail</td><td>{product.detail}</td></tr>
-                  <tr><td>Price</td><td>${product.price}</td></tr>
-                  <tr><td>Category</td><td>{product.category?.title}</td></tr>
-                  <tr><td>Vendor</td><td>{product.vendor?.address}</td></tr>
+                  <tr><td className="fw-bold">ID</td><td>{product.id}</td></tr>
+                  <tr><td className="fw-bold">Title</td><td>{product.title}</td></tr>
+                  <tr><td className="fw-bold">Detail</td><td>{product.detail}</td></tr>
+                  <tr><td className="fw-bold">Price</td><td>${product.price}</td></tr>
+                  <tr><td className="fw-bold">Category</td><td>{product.category?.title}</td></tr>
+                  <tr><td className="fw-bold">Vendor</td><td>{product.vendor?.address}</td></tr>
                   {/* Show sells in meta info */}
                   {typeof product.sells !== "undefined" && (
-                    <tr><td>Sold</td><td>{product.sells}</td></tr>
+                    <tr><td className="fw-bold">Sold</td><td>{product.sells}</td></tr>
                   )}
                 </tbody>
               </table>

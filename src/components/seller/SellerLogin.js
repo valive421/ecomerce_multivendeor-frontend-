@@ -94,6 +94,10 @@ function SellerLogin() {
           </div>
           <div className="mb-3 form-check">
             <p>Don't have an account? <Link to="/seller/register">Register</Link></p>
+            <p>
+              <span className="text-muted">Are you a customer?</span>{" "}
+              <Link to="/login">Customer Login</Link>
+            </p>
           </div>
           <button type="submit" disabled={!buttonEnable} className="btn btn-primary w-100 mb-2">Login</button>
         </form>
