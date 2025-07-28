@@ -1,4 +1,6 @@
+// This component displays a paginated list of all sellers (vendors) in the system, with links to their product lists.
 // filepath: c:\Users\Lenovo\store\frontend\src\components\common\Sellers.js
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import './liquidGlass.css';

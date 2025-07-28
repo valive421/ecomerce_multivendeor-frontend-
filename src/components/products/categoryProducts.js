@@ -1,3 +1,6 @@
+// This component displays all products for a specific category with pagination and glassmorphism UI.
+// It fetches products from the backend API using the category_id from the URL.
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import SingleProduct from '../common/SingleProduct';

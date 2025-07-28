@@ -1,3 +1,5 @@
+// This component displays the user's cart for checkout, allowing quantity changes, removal, and navigation to payment.
+
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from '../context';

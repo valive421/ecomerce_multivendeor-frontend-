@@ -1,3 +1,5 @@
+// This component displays advanced sales and customer reports for the logged-in seller, including sales by product, category, and customer rankings.
+
 import React, { useEffect, useState } from "react";
 import SellerSidebar from "./SellerSidebar";
 

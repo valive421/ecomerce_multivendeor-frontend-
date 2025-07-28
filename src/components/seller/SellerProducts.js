@@ -1,3 +1,5 @@
+// This component displays all products belonging to the logged-in seller, with options to view, edit, or delete each product.
+
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";

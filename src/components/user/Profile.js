@@ -1,3 +1,5 @@
+// This component displays and allows editing of the logged-in user's profile, including updating personal info and profile picture.
+
 import React, { useState, useRef, useEffect } from "react";
 import Sidebar from "../common/Sidebar";
 import './liquidGlass.css';

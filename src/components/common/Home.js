@@ -1,3 +1,6 @@
+// This is the main home page component. It displays latest products, popular products, sellers, and categories.
+// It fetches product data from the backend API and renders various sections for the landing page.
+
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../../logo.svg";

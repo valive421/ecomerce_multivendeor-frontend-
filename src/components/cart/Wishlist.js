@@ -1,3 +1,5 @@
+// This component displays the user's wishlist, allowing them to view, remove, or navigate to products they've wishlisted.
+
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../common/Sidebar";

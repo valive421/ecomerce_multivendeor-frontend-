@@ -1,3 +1,6 @@
+// This component displays all products in the store with pagination support.
+// It fetches product data from the backend API and renders each product using the SingleProduct component.
+
 import React from "react";
 import SingleProduct from "../common/SingleProduct";
 import { useEffect, useState } from "react";

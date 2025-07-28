@@ -1,3 +1,5 @@
+// This component displays all orders for the logged-in user, with options to view order items and their details.
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../common/Sidebar";

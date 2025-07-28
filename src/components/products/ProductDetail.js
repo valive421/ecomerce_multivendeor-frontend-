@@ -1,3 +1,6 @@
+// This component displays detailed information for a single product, including images, vendor info, reviews, and related products.
+// It allows adding/removing the product from cart and wishlist, and submitting reviews.
+
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CartContext, WishlistContext } from '../context';

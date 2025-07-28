@@ -1,3 +1,5 @@
+// This component displays the seller's dashboard, showing total products, orders, and customers for the logged-in seller.
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 

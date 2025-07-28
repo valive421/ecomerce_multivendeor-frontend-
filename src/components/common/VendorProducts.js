@@ -1,3 +1,5 @@
+// This component displays all products for a specific vendor, fetched by vendorId from the backend API.
+
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import SingleProduct from "./SingleProduct";
