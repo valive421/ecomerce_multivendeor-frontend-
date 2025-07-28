@@ -123,7 +123,7 @@ function Home() {
     <main className="py-5 liquid-glass-bg" style={{ minHeight: "100vh" }}>
       <div className="container">
         {/* Latest Products with slider */}
-        <div className="glass-card mb-4 px-4 py-4 animate__animated animate__fadeInDown d-flex align-items-center justify-content-between">
+        <div className="glass-card mb-4 px-4 py-4 animate__animated animate__fadeInDown d-flex align-items-center justify-content-between shadow-sm rounded-4">
           <h3 className="fw-bold text-gradient mb-0">
             <i className="fa-solid fa-bolt me-2"></i> Latest Products
           </h3>
@@ -145,13 +145,18 @@ function Home() {
                 className="btn btn-glass btn-outline-primary btn-sm me-2"
                 onClick={handlePrev}
                 disabled={sliderIndex === 0}
+                title="Previous"
               >
                 <i className="fa fa-chevron-left"></i>
               </button>
+              <span className="mx-2 text-muted small">
+                {sliderIndex + 1} / {Math.max(1, latestProducts.length - 3)}
+              </span>
               <button
                 className="btn btn-glass btn-outline-primary btn-sm"
                 onClick={handleNext}
                 disabled={sliderIndex >= latestProducts.length - 4}
+                title="Next"
               >
                 <i className="fa fa-chevron-right"></i>
               </button>
@@ -159,7 +164,7 @@ function Home() {
           )}
         </div>
         {/* Popular Products (by sells) */}
-        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown shadow-sm rounded-4">
           <h3 className="fw-bold text-gradient mb-0">
             <i className="fa-solid fa-fire me-2"></i> Popular Products
           </h3>
@@ -175,7 +180,7 @@ function Home() {
           ))}
         </div>
         {/* Popular Sellers */}
-        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown shadow-sm rounded-4">
           <h3 className="fw-bold text-gradient mb-0">
             <i className="fa-solid fa-user-tie me-2"></i> Popular Sellers
           </h3>
@@ -186,13 +191,15 @@ function Home() {
         <div className="row g-4">
           {popularSellers.map((seller, i) => (
             <div className="col-12 col-sm-6 col-md-3" key={seller.id || i}>
-              <div className="glass-card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light text-center py-3 animate__animated animate__fadeInUp">
-                <h5 className="card-title fw-bold">{seller.name}</h5>
-                <p className="card-text fs-5 fw-bold">
-                  <i className="fa-solid fa-bag-shopping me-1"></i>
-                  Total Sales: {seller.totalSales}
-                </p>
-                <p className="card-text text-light small">{seller.email}</p>
+              <div className="glass-card h-100 shadow border-0 rounded-4 bg-secondary text-light text-center py-4 animate__animated animate__fadeInUp d-flex flex-column justify-content-between">
+                <div>
+                  <h5 className="card-title fw-bold mb-2">{seller.name}</h5>
+                  <p className="card-text fs-5 fw-bold mb-1">
+                    <i className="fa-solid fa-bag-shopping me-1"></i>
+                    Total Sales: <span className="text-warning">{seller.totalSales}</span>
+                  </p>
+                  <p className="card-text text-light small mb-2">{seller.email}</p>
+                </div>
                 <Link
                   to={`/vendor/${seller.id}/products`}
                   className="btn btn-glass btn-light w-100 rounded-pill mt-2"
@@ -204,7 +211,7 @@ function Home() {
           ))}
         </div>
         {/* Popular Categories */}
-        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown">
+        <div className="glass-card d-flex justify-content-between align-items-center mt-5 mb-4 px-4 py-4 animate__animated animate__fadeInDown shadow-sm rounded-4">
           <h3 className="fw-bold text-gradient mb-0">
             <i className="fa-solid fa-layer-group me-2"></i> Popular Categories
           </h3>
@@ -215,13 +222,19 @@ function Home() {
         <div className="row g-4">
           {popularCategories.map((cat, i) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={cat.id || i}>
-              <div className="glass-card h-100 shadow-sm border-0 rounded-4 bg-secondary text-light animate__animated animate__fadeInUp">
-                <img src={cat.img} className="card-img-top p-3 rounded-4" alt="Category" />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold">{cat.name}</h5>
+              <div className="glass-card h-100 shadow border-0 rounded-4 bg-secondary text-light animate__animated animate__fadeInUp d-flex flex-column">
+                <img
+                  src={cat.img}
+                  className="card-img-top p-3 rounded-4"
+                  alt="Category"
+                  style={{ height: 140, objectFit: "cover", background: "#fff" }}
+                />
+                <div className="card-body d-flex flex-column align-items-center">
+                  <h5 className="card-title fw-bold mb-2">{cat.name}</h5>
+                  <p className="card-text text-light small mb-2">{cat.detail}</p>
                   <Link
                     to={`/category/${cat.name.toLowerCase()}/${cat.id || i + 1}`}
-                    className="btn btn-glass btn-light w-100 rounded-pill"
+                    className="btn btn-glass btn-light w-100 rounded-pill mt-auto"
                   >
                     View Category
                   </Link>
