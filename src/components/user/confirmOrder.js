@@ -156,12 +156,8 @@ function ConfirmOrder() {
         {orderPlaced && !paymentDone && (
           <div className="mt-4">
             <h5 className="mb-3">Choose Payment Method</h5>
-            <button className="btn btn-primary me-2" onClick={() => handlePayment("Razorpay")}>
-              Pay with Razorpay
-            </button>
-            <button className="btn btn-warning me-2" onClick={() => handlePayment("Paytm")}>
-              Pay with Paytm
-            </button>
+
+
             <button className="btn btn-info text-white" onClick={() => setShowPaypal(true)} disabled={showPaypal}>
               Pay with PayPal (Sandbox)
             </button>

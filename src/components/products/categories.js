@@ -1,7 +1,7 @@
 // This component displays a list of all product categories with pagination.
 // It fetches category data from the backend API and provides links to each category's product list.
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from '../../logo.svg'; // fixed path
 import { Link } from 'react-router-dom';
 import './liquidGlass.css';
