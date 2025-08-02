@@ -11,6 +11,7 @@ function Header() {
   console.log("User Context:", userContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sellerDropdownOpen, setSellerDropdownOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const dropdownRef = useRef();
   const sellerDropdownRef = useRef();
 
@@ -28,12 +29,35 @@ function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (search.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(search.trim())}`;
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark glass-card shadow-sm sticky-top px-2 py-2" style={{ background: "rgba(30,41,59,0.95)", borderRadius: "1.5rem", margin: "0.5rem 0" }}>
       <div className="container">
         <Link className="navbar-brand fw-bold fs-4 text-gradient" to="/" style={{ letterSpacing: "1px" }}>
           <i className="fa-solid fa-store me-2"></i>bit Bazzar
         </Link>
+        {/* --- Add search bar here --- */}
+        <form className="d-flex ms-3" onSubmit={handleSearchSubmit} style={{ flex: 1, maxWidth: 400 }}>
+          <input
+            className="form-control me-2"
+            type="search"
+            placeholder="Search products..."
+            aria-label="Search"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ borderRadius: "1rem" }}
+          />
+          <button className="btn btn-outline-light" type="submit" style={{ borderRadius: "1rem" }}>
+            <i className="fa fa-search"></i>
+          </button>
+        </form>
+        {/* --- End search bar --- */}
         <button
           className="navbar-toggler"
           type="button"

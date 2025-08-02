@@ -12,6 +12,7 @@ import Categories from './components/products/categories';
 import Categoryproduct from './components/products/categoryProducts';
 import AllProducts from './components/products/AllProducts';
 import ProductDetail from './components/products/ProductDetail';
+import SearchProducts from './components/products/SearchProducts';
 
 // Cart
 import Checkout from './components/cart/checkout';
@@ -137,6 +138,7 @@ function App() {
             <Route path='/seller/changepassword' element={<Sellerchangepass />} />
             <Route path="/sellers" element={<Sellers />} />
             <Route path="/vendor/:vendorId/products" element={<VendorProducts />} />
+            <Route path='/search' element={<SearchProducts />} />
           </Routes>
           <Footer />
         </WishlistContext.Provider>
