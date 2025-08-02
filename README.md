@@ -5,6 +5,10 @@
 - **Home Page:**  
   - Displays latest products, popular products, popular sellers, and popular categories.
   - Fetches product data from the backend API.
+- **Product Search:**  
+  - Search bar in the header allows users to search for products by name or description.
+  - Search results page displays products matching the search term or prefix.
+  - Integrates with backend API for fast, accurate product search.
 - **All Products Page:**  
   - Shows all products with pagination.
   - Fetches and displays products from the backend.
