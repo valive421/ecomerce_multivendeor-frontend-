@@ -127,6 +127,10 @@ function SellerRegister() {
             <input type="text" onChange={inputHandler} value={registerFormData.mobile} name="mobile" className="form-control" placeholder="Enter mobile no" />
           </div>
           <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input type="password" onChange={inputHandler} value={registerFormData.password} name="password" className="form-control" placeholder="Enter password" />
+          </div>
+          <div className="mb-3">
             <label className="form-label">Address</label>
             <input type="text" onChange={inputHandler} value={registerFormData.address} name="address" className="form-control" placeholder="Enter address" />
           </div>
