@@ -3,7 +3,7 @@ import React from "react";
 // Only export contexts, do not import any components here.
 // Make sure this file does NOT import anything except from 'react'.
 
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "http://localhost:3000/api";
 
 export const UserContext = React.createContext();
 export const CartContext = React.createContext();
