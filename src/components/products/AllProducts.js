@@ -4,6 +4,7 @@
 import React from "react";
 import SingleProduct from "../common/SingleProduct";
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function AllProducts() {
@@ -15,11 +16,10 @@ function AllProducts() {
   const [pageSize, setPageSize] = useState(10); // default, will auto-detect
   const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchProducts = (url = "http://127.0.0.1:8000/api/products/", page = 1) => {
+  const fetchProducts = (url = `${BASE_URL}/products/`, page = 1) => {
     setLoading(true);
-    // If url is the base, add ?page=page
     let fetchUrl = url;
-    if (url === "http://127.0.0.1:8000/api/products/") {
+    if (url === `${BASE_URL}/products/`) {
       fetchUrl = `${url}?page=${page}`;
     }
     fetch(fetchUrl)
@@ -49,7 +49,7 @@ function AllProducts() {
   };
 
   useEffect(() => {
-    fetchProducts("http://127.0.0.1:8000/api/products/", 1);
+    fetchProducts(`${BASE_URL}/products/`, 1);
   }, []);
 
   // Calculate total pages
@@ -58,7 +58,7 @@ function AllProducts() {
   // Handle page change
   const handlePageClick = (page) => {
     setCurrentPage(page);
-    fetchProducts("http://127.0.0.1:8000/api/products/", page);
+    fetchProducts(`${BASE_URL}/products/`, page);
   };
 
   return (

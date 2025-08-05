@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CartContext, WishlistContext } from '../context';
+import { CartContext, WishlistContext, BASE_URL } from '../context';
 import './liquidGlass.css';
 
 function ProductDetail() {
@@ -28,7 +28,7 @@ function ProductDetail() {
 
   // Fetch main product by ID
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/product/${product_id}/`)
+    fetch(`${BASE_URL}/product/${product_id}/`)
       .then((res) => res.json())
       .then(async (data) => {
         // Fetch profile pictures for each customer in product_ratings
@@ -41,7 +41,7 @@ function ProductDetail() {
               if (typeof ratingStr === "object" && ratingStr.customer && ratingStr.customer.id) {
                 // Fetch profile picture for this customer
                 try {
-                  const res = await fetch(`http://127.0.0.1:8000/api/customer/${ratingStr.customer.id}/`);
+                  const res = await fetch(`${BASE_URL}/customer/${ratingStr.customer.id}/`);
                   const customerData = await res.json();
                   let pp = "";
                   if (Array.isArray(customerData.profilepic) && customerData.profilepic.length > 0) {
@@ -66,7 +66,7 @@ function ProductDetail() {
   useEffect(() => {
     if (product && product.category && product.category.id) {
       setRelatedLoading(true);
-      fetch(`http://127.0.0.1:8000/api/products/?category=${product.category.id}&page=${relatedPage}`)
+      fetch(`${BASE_URL}/products/?category=${product.category.id}&page=${relatedPage}`)
         .then((response) => response.json())
         .then((data) => {
           const mapped = Array.isArray(data.data)
@@ -174,7 +174,7 @@ function ProductDetail() {
       setReviewLoading(false);
       return;
     }
-    fetch(`http://127.0.0.1:8000/api/product/${product_id}/add_review/`, {
+    fetch(`${BASE_URL}/product/${product_id}/add_review/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -192,7 +192,7 @@ function ProductDetail() {
           setReviewText("");
           setReviewStars(0);
           // Optionally, reload product to show new review
-          fetch(`http://127.0.0.1:8000/api/product/${product_id}/`)
+          fetch(`${BASE_URL}/product/${product_id}/`)
             .then((res) => res.json())
             .then((data) => setProduct(data));
         } else {

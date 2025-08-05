@@ -6,17 +6,17 @@ import Sidebar from './SellerSidebar';
 import { useState,useEffect } from 'react';
 // Add glassmorphism CSS
 import './liquidGlass.css'; // <-- create this file in the same folder
+import { BASE_URL } from "../context";
 
 function SellerCustomers(){
-    const baseUrl = 'http://127.0.0.1:8000/';
+    // Use BASE_URL instead of hardcoded baseUrl
     const vendorId = localStorage.getItem('seller_id');
     const [CustomerList,setCustomerList]=useState([]);
     const [showOrders, setShowOrders] = useState({ show: false, orders: [], customer: null });
 
     useEffect(()=>{
-        // Only fetch if vendorId is valid
         if (vendorId && vendorId !== "null" && vendorId !== "undefined") {
-            fetchData(`${baseUrl}api/vendor/${vendorId}/customers/`);
+            fetchData(`${BASE_URL}/vendor/${vendorId}/customers/`);
         } else {
             setCustomerList([]);
             console.warn("No valid vendor_id found in localStorage.");
@@ -42,10 +42,10 @@ function SellerCustomers(){
     function showConfirm(customer_id){
         var _confirm=window.confirm('Are your sure you want to delete?');
         if(_confirm){
-            axios.delete(baseUrl+'api/delete-customer-orders/'+customer_id)
+            axios.delete(`${BASE_URL}/delete-customer-orders/${customer_id}`)
             .then(function (response){
                 if(response.bool==true){
-                    fetchData(baseUrl+'api/seller/customer/'+customer_id+'/orderitems');
+                    fetchData(`${BASE_URL}/seller/customer/${customer_id}/orderitems`);
                  }
             })
             .catch(function(error){
@@ -57,7 +57,7 @@ function SellerCustomers(){
     // Fetch orders for a customer for this vendor
     async function handleShowOrders(customer) {
         try {
-            const res = await fetch(`${baseUrl}api/vendor/${vendorId}/customer/${customer.customer.id}/orders/`);
+            const res = await fetch(`${BASE_URL}/vendor/${vendorId}/customer/${customer.customer.id}/orders/`);
             if (!res.ok) {
                 throw new Error("Failed to fetch orders");
             }

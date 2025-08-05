@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../common/Sidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function ChangePassword() {
@@ -23,7 +24,7 @@ function ChangePassword() {
       return;
     }
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/customer/change-password/", {
+      const res = await fetch(`${BASE_URL}/customer/change-password/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

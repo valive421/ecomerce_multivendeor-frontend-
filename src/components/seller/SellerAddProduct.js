@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function SellerAddProduct() {
@@ -22,7 +23,7 @@ function SellerAddProduct() {
 
   useEffect(() => {
     // Fetch categories for dropdown
-    fetch("http://127.0.0.1:8000/api/categories/")
+    fetch(`${BASE_URL}/categories/`)
       .then(res => res.json())
       .then(data => setCategories(data.data || data));
   }, []);
@@ -53,7 +54,7 @@ function SellerAddProduct() {
     if (form.images && form.images.length > 0) {
       form.images.forEach(img => formData.append("images", img));
     }
-    fetch("http://127.0.0.1:8000/api/products/", {
+    fetch(`${BASE_URL}/products/`, {
       method: "POST",
       body: formData
     })
@@ -81,7 +82,7 @@ function SellerAddProduct() {
       setCategoryMsg("Title is required.");
       return;
     }
-    fetch("http://127.0.0.1:8000/api/categories/", {
+    fetch(`${BASE_URL}/categories/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newCategory)

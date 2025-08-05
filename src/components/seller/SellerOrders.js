@@ -1,17 +1,17 @@
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import Sidebar from './SellerSidebar';
-// import { CheckCircle, Loader} from 'react-feather';
 import { useState, useEffect, useRef } from 'react';
-// import { CurrencyContext } from "../../context";
+import { BASE_URL } from "../context";
 import './liquidGlass.css'; // Add this import at the top
+
 function SellerOrders() {
     const [OrderItems, setOrderItems] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
     const [loading, setLoading] = useState(false);
     const [statusLoading, setStatusLoading] = useState({});
     const [detailModal, setDetailModal] = useState({ show: false, customer: null, email: null, mobile: null, address: null, qty: null, product: null });
-    const baseUrl = 'http://127.0.0.1:8000/';
+    // const baseUrl = 'http://127.0.0.1:8000/';
 
     // Get vendorId from localStorage, fallback to a default or prompt if not found
     let vendorId = localStorage.getItem('vendor_id');
@@ -25,7 +25,7 @@ function SellerOrders() {
     const dropdownRefs = useRef({});
 
     useEffect(() => {
-        fetchData(baseUrl + 'api/vendor/' + vendorId + '/orderitems');
+        fetchData(`${BASE_URL}/vendor/${vendorId}/orderitems`);
         // Close dropdown on outside click
         function handleClickOutside(event) {
             if (
@@ -54,11 +54,11 @@ function SellerOrders() {
 
     function changeOrderStatus(order_id, ord_status) {
         setStatusLoading(prev => ({ ...prev, [order_id]: true }));
-        axios.patch(baseUrl + 'api/order-status/' + order_id + '/', {
+        axios.patch(`${BASE_URL}/order-status/${order_id}/`, {
             status: ord_status,
         })
             .then(function () {
-                fetchData(baseUrl + 'api/vendor/' + vendorId + '/orderitems');
+                fetchData(`${BASE_URL}/vendor/${vendorId}/orderitems`);
                 setOpenDropdown(null);
             })
             .catch(function (error) {
@@ -71,21 +71,21 @@ function SellerOrders() {
 
     async function handleShowDetail(item) {
         // Fetch order info to get customer id
-        const orderRes = await fetch(`${baseUrl}api/order/${item.order.id}/`);
+        const orderRes = await fetch(`${BASE_URL}/order/${item.order.id}/`);
         const orderItems = await orderRes.json();
         // Find the order item for this product
         const thisOrderItem = Array.isArray(orderItems) ? orderItems.find(oi => oi.id === item.id) : null;
         // Fetch order to get customer id
-        const orderListRes = await fetch(`${baseUrl}api/orders/?id=${item.order.id}`);
+        const orderListRes = await fetch(`${BASE_URL}/orders/?id=${item.order.id}`);
         const orderListData = await orderListRes.json();
         if (!orderListData.data || orderListData.data.length === 0) return;
         const orderObj = orderListData.data[0];
         const customerId = orderObj.customer;
         // Fetch customer info
-        const customerRes = await fetch(`${baseUrl}api/customer/${customerId}/`);
+        const customerRes = await fetch(`${BASE_URL}/customer/${customerId}/`);
         const customerData = await customerRes.json();
         // Fetch default address
-        const addressRes = await fetch(`${baseUrl}api/customer-addresses/${customerId}/`);
+        const addressRes = await fetch(`${BASE_URL}/customer-addresses/${customerId}/`);
         const addressData = await addressRes.json();
         let defaultAddress = "";
         if (Array.isArray(addressData)) {
@@ -139,7 +139,7 @@ function SellerOrders() {
                                         <td className="fw-bold">{index + 1}</td>
                                         <td>
                                             <Link to={`/product/${item.product.title}/${item.product.id}`} className="d-flex align-items-center text-decoration-none">
-                                                <img src={`${baseUrl}/${item.product.image}`} className="img-thumbnail me-2" width="60" alt={item.product.title} style={{ objectFit: "cover", borderRadius: 8, border: "1px solid #eee" }} />
+                                                <img src={`${BASE_URL}/${item.product.image}`} className="img-thumbnail me-2" width="60" alt={item.product.title} style={{ objectFit: "cover", borderRadius: 8, border: "1px solid #eee" }} />
                                                 <span className="fw-semibold">{item.product.title}</span>
                                             </Link>
                                         </td>

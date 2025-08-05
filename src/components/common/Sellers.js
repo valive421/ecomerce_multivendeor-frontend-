@@ -1,8 +1,8 @@
 // This component displays a paginated list of all sellers (vendors) in the system, with links to their product lists.
-// filepath: c:\Users\Lenovo\store\frontend\src\components\common\Sellers.js
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function Sellers() {
@@ -13,7 +13,7 @@ function Sellers() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/vendors/?page=${currentPage}`)
+    fetch(`${BASE_URL}/vendors/?page=${currentPage}`)
       .then(res => res.json())
       .then(data => {
         const sellers = (data.results || data.data || []).map(vendor => ({

@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../context";
+import { UserContext, BASE_URL } from "../context";
 
 function SellerLogin() {
-  const baseUrl = 'http://127.0.0.1:8000/api/';
   const [formError, setFormError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [loginFormData, setLoginFormData] = useState({
@@ -26,7 +25,7 @@ function SellerLogin() {
     formData.append('username', loginFormData.username);
     formData.append('password', loginFormData.password);
 
-    axios.post(baseUrl + 'vendor/login/', formData)
+    axios.post(`${BASE_URL}/vendor/login/`, formData)
       .then(function (response) {
         if (response.data.bool === false) {
           setFormError(true);
@@ -107,3 +106,4 @@ function SellerLogin() {
 }
 
 export default SellerLogin;
+

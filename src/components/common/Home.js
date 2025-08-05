@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import logo from "../../logo.svg";
 import SingleProduct from "./SingleProduct";
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function Home() {
@@ -16,7 +17,7 @@ function Home() {
   const [popularCategories, setPopularCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/?page=1&page_size=20")
+    fetch(`${BASE_URL}/products/?page=1&page_size=20`)
       .then(res => res.json())
       .then(data => {
         const mapped = (data.data || []).map(item => ({
@@ -45,7 +46,7 @@ function Home() {
 
   useEffect(() => {
     // Fetch popular sellers
-    fetch("http://127.0.0.1:8000/api/vendors/?ordering=-id")
+    fetch(`${BASE_URL}/vendors/?ordering=-id`)
       .then(res => res.json())
       .then(async data => {
         // For each seller, fetch their total sales (order count) using the vendor orderitems endpoint
@@ -55,7 +56,7 @@ function Home() {
             // Fetch all orderitems for this vendor to count total sales
             let totalSales = 0;
             try {
-              const res = await fetch(`http://127.0.0.1:8000/api/vendor/${vendor.id}/orderitems`);
+              const res = await fetch(`${BASE_URL}/vendor/${vendor.id}/orderitems`);
               const orderData = await res.json();
               // If paginated, use count; else fallback to results/data length
               if (typeof orderData.count === "number") {
@@ -84,7 +85,7 @@ function Home() {
 
   useEffect(() => {
     // Fetch categories sorted by popularity (e.g., by number of products or sales)
-    fetch("http://127.0.0.1:8000/api/categories/")
+    fetch(`${BASE_URL}/categories/`)
       .then(res => res.json())
       .then(data => {
         // If backend provides popularity, sort by it; else just show all

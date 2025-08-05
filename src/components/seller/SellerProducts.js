@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
 import './liquidGlass.css'; // Add this import at the top
+import { BASE_URL } from "../context";
 
 function SellerProducts() {
   const [products, setProducts] = useState([]);
@@ -12,10 +13,9 @@ function SellerProducts() {
 
   useEffect(() => {
     if (sellerId) {
-      fetch(`http://127.0.0.1:8000/api/products/?vendor=${sellerId}`)
+      fetch(`${BASE_URL}/products/?vendor=${sellerId}`)
         .then(res => res.json())
         .then(data => {
-          // If paginated, use data.data; else use data
           setProducts(data.data || data);
         });
     }
@@ -31,7 +31,7 @@ function SellerProducts() {
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      fetch(`http://127.0.0.1:8000/api/product/${id}/`, {
+      fetch(`${BASE_URL}/product/${id}/`, {
         method: "DELETE"
       })
         .then(res => {

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import SingleProduct from "./SingleProduct";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function VendorProducts() {
@@ -14,11 +15,11 @@ function VendorProducts() {
   useEffect(() => {
     setLoading(true);
     // Fetch vendor info
-    fetch(`http://127.0.0.1:8000/api/vendor/${vendorId}/`)
+    fetch(`${BASE_URL}/vendor/${vendorId}/`)
       .then(res => res.json())
       .then(data => setVendor(data));
     // Fetch products by vendor
-    fetch(`http://127.0.0.1:8000/api/products/?vendor=${vendorId}`)
+    fetch(`${BASE_URL}/products/?vendor=${vendorId}`)
       .then(res => res.json())
       .then(data => {
         // Fix: map each product to the expected SingleProduct shape

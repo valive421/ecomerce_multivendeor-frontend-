@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import logo from '../../logo.svg'; // fixed path
 import { Link } from 'react-router-dom';
+import { BASE_URL } from '../context';
 import './liquidGlass.css';
 
 function Categories() {
@@ -15,10 +16,10 @@ function Categories() {
   const [prevPage, setPrevPage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchCategories = (url = "http://127.0.0.1:8000/api/categories/", page = 1) => {
+  const fetchCategories = (url = `${BASE_URL}/categories/`, page = 1) => {
     setLoading(true);
     let fetchUrl = url;
-    if (url === "http://127.0.0.1:8000/api/categories/") {
+    if (url === `${BASE_URL}/categories/`) {
       fetchUrl = `${url}?page=${page}`;
     }
     fetch(fetchUrl)
@@ -34,14 +35,14 @@ function Categories() {
   };
 
   useEffect(() => {
-    fetchCategories("http://127.0.0.1:8000/api/categories/", 1);
+    fetchCategories(`${BASE_URL}/categories/`, 1);
   }, []);
 
   const totalPages = Math.ceil(count / pageSize);
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
-    fetchCategories("http://127.0.0.1:8000/api/categories/", page);
+    fetchCategories(`${BASE_URL}/categories/`, page);
   };
 
   return (

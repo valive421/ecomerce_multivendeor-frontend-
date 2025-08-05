@@ -77,7 +77,7 @@ function SellerRegister() {
               seller_id: response.data.vendor
             }));
           }
-          window.location.href = '/seller/login';
+          //window.location.href = '/seller/login';
         }
       });
   };

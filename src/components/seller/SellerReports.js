@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SellerSidebar from "./SellerSidebar";
+import { BASE_URL } from "../context";
 
 function SellerReports() {
   const [report, setReport] = useState({
@@ -23,7 +24,7 @@ function SellerReports() {
     if (!vendorId) return;
 
     console.log("Fetching customers for vendor:", vendorId);
-    fetch(`http://127.0.0.1:8000/api/vendor/${vendorId}/customers/`)
+    fetch(`${BASE_URL}/vendor/${vendorId}/customers/`)
       .then(res => res.json())
       .then(data => {
         console.log("Fetched customers response:", data);
@@ -35,7 +36,7 @@ function SellerReports() {
         }));
 
         console.log("Fetching orderitems for vendor:", vendorId);
-        fetch(`http://127.0.0.1:8000/api/vendor/${vendorId}/orderitems`)
+        fetch(`${BASE_URL}/vendor/${vendorId}/orderitems`)
           .then(res => res.json())
           .then(data => {
             console.log("Fetched orderitems response:", data);
@@ -100,7 +101,7 @@ function SellerReports() {
           });
 
         console.log("Fetching products for vendor:", vendorId);
-        fetch(`http://127.0.0.1:8000/api/products/?vendor=${vendorId}`)
+        fetch(`${BASE_URL}/products/?vendor=${vendorId}`)
           .then(res => res.json())
           .then(data => {
             console.log("Fetched products response:", data);

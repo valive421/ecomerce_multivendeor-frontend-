@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import SingleProduct from "../common/SingleProduct";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function useQuery() {
@@ -16,7 +17,7 @@ function SearchProducts() {
   useEffect(() => {
     if (searchTerm.trim()) {
       setLoading(true);
-      fetch(`http://127.0.0.1:8000/api/search/?q=${encodeURIComponent(searchTerm)}`)
+      fetch(`${BASE_URL}/search/?q=${encodeURIComponent(searchTerm)}`)
         .then(res => res.json())
         .then(data => {
           const mapped = (data.results || []).map(item => ({

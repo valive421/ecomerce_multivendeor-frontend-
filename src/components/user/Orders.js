@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function Orders() {
@@ -25,7 +26,7 @@ function Orders() {
   const fetchOrders = async (pageNum = 1) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/orders/?page=${pageNum}`);
+      const res = await fetch(`${BASE_URL}/orders/?page=${pageNum}`);
       const data = await res.json();
       setOrders(data.data || []);
       setNextPage(data.links?.next);
@@ -37,11 +38,10 @@ function Orders() {
   };
 
   const fetchProductDetail = async (productId) => {
-    if (productDetails[productId]) return; // already fetched
+    if (productDetails[productId]) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/products/?id=${productId}`);
+      const res = await fetch(`${BASE_URL}/products/?id=${productId}`);
       const data = await res.json();
-      // Assume data.data is an array of products
       if (Array.isArray(data.data) && data.data.length > 0) {
         setProductDetails(prev => ({ ...prev, [productId]: data.data[0] }));
       }
@@ -55,16 +55,14 @@ function Orders() {
     setSelectedOrderId(orderId);
     setOrderStatus(null);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/order/${orderId}/`);
+      const res = await fetch(`${BASE_URL}/order/${orderId}/`);
       const data = await res.json();
       const items = Array.isArray(data.data) ? data.data : [];
       setOrderItems(items);
-      // Fetch product details for all items
       items.forEach(item => {
         if (item.product) fetchProductDetail(item.product);
       });
-      // Fetch order status from the orders API (not from order items)
-      const orderRes = await fetch(`http://127.0.0.1:8000/api/orders/?id=${orderId}`);
+      const orderRes = await fetch(`${BASE_URL}/orders/?id=${orderId}`);
       const orderData = await orderRes.json();
       if (Array.isArray(orderData.data) && orderData.data.length > 0 && typeof orderData.data[0].order_status !== "undefined") {
         setOrderStatus(orderData.data[0].order_status);

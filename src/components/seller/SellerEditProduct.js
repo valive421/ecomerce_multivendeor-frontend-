@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css'; // Add this import at the top
 
 function SellerEditProduct() {
@@ -25,11 +26,11 @@ function SellerEditProduct() {
 
   useEffect(() => {
     // Fetch categories for dropdown
-    fetch("http://127.0.0.1:8000/api/categories/")
+    fetch(`${BASE_URL}/categories/`)
       .then(res => res.json())
       .then(data => setCategories(data.data || data));
     // Fetch product details
-    fetch(`http://127.0.0.1:8000/api/product/${id}/`)
+    fetch(`${BASE_URL}/product/${id}/`)
       .then(res => res.json())
       .then(data => {
         setForm({
@@ -39,7 +40,6 @@ function SellerEditProduct() {
           description: data.detail || "",
           images: [],
         });
-        // Set product images for deletion UI
         setProductImages(data.product_images || []);
         setLoading(false);
       });
@@ -71,7 +71,7 @@ function SellerEditProduct() {
     if (form.images && form.images.length > 0) {
       form.images.forEach(img => formData.append("images", img));
     }
-    fetch(`http://127.0.0.1:8000/api/product/${id}/`, {
+    fetch(`${BASE_URL}/product/${id}/`, {
       method: "PATCH",
       body: formData
     })
@@ -90,7 +90,7 @@ function SellerEditProduct() {
   // Delete image handler
   const handleDeleteImage = (imageId) => {
     if (!window.confirm("Are you sure you want to delete this image?")) return;
-    fetch(`http://127.0.0.1:8000/api/product-image/${imageId}/`, {
+    fetch(`${BASE_URL}/product-image/${imageId}/`, {
       method: "DELETE"
     })
       .then(res => {
@@ -116,7 +116,7 @@ function SellerEditProduct() {
       setCategoryMsg("Title is required.");
       return;
     }
-    fetch("http://127.0.0.1:8000/api/categories/", {
+    fetch(`${BASE_URL}/categories/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newCategory)

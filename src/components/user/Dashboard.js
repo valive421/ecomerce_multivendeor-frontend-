@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function Dashboard() {
@@ -13,13 +14,13 @@ function Dashboard() {
 
   useEffect(() => {
     if (customerId) {
-      fetch(`http://127.0.0.1:8000/api/customer-dashboard/${customerId}/`)
+      fetch(`${BASE_URL}/customer-dashboard/${customerId}/`)
         .then(res => res.json())
         .then(data => {
           setDashboard(d => ({
             ...d,
             total_orders: data.total_orders || 0,
-            total_addresses: data.total_address || 0, // <-- match backend key
+            total_addresses: data.total_address || 0,
           }));
         });
     }

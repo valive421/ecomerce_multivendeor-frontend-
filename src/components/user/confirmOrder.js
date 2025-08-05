@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext, CartContext } from '../context';
+import { UserContext, CartContext, BASE_URL } from '../context';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import './liquidGlass.css';
 
@@ -51,11 +51,10 @@ function ConfirmOrder() {
     setPlacing(true);
 
     try {
-      // Debug: log the payload being sent to backend
       console.log("Placing order with payload:", { customer: customerId });
 
       // 2. Create the Order
-      const orderRes = await fetch("http://127.0.0.1:8000/api/orders/", {
+      const orderRes = await fetch(`${BASE_URL}/orders/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,10 +69,8 @@ function ConfirmOrder() {
 
       const orderData = await orderRes.json();
       const orderId = orderData.id;
-      setBackendOrderId(orderId); // store backend order id
+      setBackendOrderId(orderId);
 
-      // 2. Add Order Items
-      // Defensive: ensure orderId is a valid positive integer before posting order items
       if (!orderId || isNaN(orderId) || Number(orderId) <= 0) {
         console.error("orderId is invalid:", orderId);
         alert("Order creation failed. No valid order id returned.");
@@ -81,7 +78,7 @@ function ConfirmOrder() {
         return;
       }
       for (let item of cartData) {
-        await fetch(`http://127.0.0.1:8000/api/orderitem/`, {
+        await fetch(`${BASE_URL}/orderitem/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -95,8 +92,7 @@ function ConfirmOrder() {
         });
       }
       setOrderPlaced(true);
-      setCartData([]); // clear cart after placing order
-      // Do not alert here, wait for payment
+      setCartData([]);
     } catch (error) {
       console.error(error);
       alert("Order failed. Try again.");
@@ -250,14 +246,14 @@ function ConfirmOrder() {
                             let csrftoken = getCookie("csrftoken");
                             if (!csrftoken) {
                               // Make a GET request to set the CSRF cookie
-                              await fetch("http://127.0.0.1:8000/api/orders/", {
+                              await fetch(`${BASE_URL}/orders/`, {
                                 method: "GET",
                                 credentials: "include",
                               });
                               csrftoken = getCookie("csrftoken");
                             }
 
-                            await fetch(`http://127.0.0.1:8000/api/order-status/${backendOrderId}/`, {
+                            await fetch(`${BASE_URL}/order-status/${backendOrderId}/`, {
                               method: "PATCH",
                               headers: {
                                 "Content-Type": "application/json",
@@ -291,4 +287,5 @@ function ConfirmOrder() {
 }
 
 export default ConfirmOrder;
+
 

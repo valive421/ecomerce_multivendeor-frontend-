@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../common/Sidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function Addresses() {
@@ -9,7 +10,7 @@ function Addresses() {
 
   useEffect(() => {
     if (customerId) {
-      fetch(`http://127.0.0.1:8000/api/address/?customer=${customerId}`)
+      fetch(`${BASE_URL}/address/?customer=${customerId}`)
         .then(res => res.json())
         .then(data => {
           setAddresses(data.data || []);
@@ -24,11 +25,11 @@ function Addresses() {
   function handleAdd(e) {
     e.preventDefault();
     if (newAddress.address && customerId) {
-      fetch("http://127.0.0.1:8000/api/address/", {
+      fetch(`${BASE_URL}/address/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customer: Number(customerId), // Ensure customer is sent as an integer
+          customer: Number(customerId),
           address: newAddress.address,
           default_address: false
         })
@@ -42,7 +43,7 @@ function Addresses() {
   }
 
   function handleRemove(id) {
-    fetch(`http://127.0.0.1:8000/api/address/${id}/`, {
+    fetch(`${BASE_URL}/address/${id}/`, {
       method: "DELETE"
     }).then(() => {
       setAddresses(addresses.filter(addr => addr.id !== id));
@@ -50,17 +51,16 @@ function Addresses() {
   }
 
   function handleMarkDefault(id) {
-    // Set all addresses to default_address: false, then set this one to true
     addresses.forEach(addr => {
       if (addr.id !== id && addr.default_address) {
-        fetch(`http://127.0.0.1:8000/api/address/${addr.id}/`, {
+        fetch(`${BASE_URL}/address/${addr.id}/`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ default_address: false })
         });
       }
     });
-    fetch(`http://127.0.0.1:8000/api/address/${id}/`, {
+    fetch(`${BASE_URL}/address/${id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ default_address: true })

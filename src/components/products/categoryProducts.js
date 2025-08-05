@@ -5,10 +5,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import SingleProduct from '../common/SingleProduct';
 import logo from '../../logo.svg'; // fixed path
+import { BASE_URL } from '../context';
 import './liquidGlass.css';
 
 function CategoryProducts(props) {
-  const baseUrl = "http://127.0.0.1:8000/api";
   const [products, setProducts] = useState([]);
   const [totalResult, setTotalResults] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -16,7 +16,7 @@ function CategoryProducts(props) {
   const { category_id } = useParams();
 
   useEffect(() => {
-    fetchData(`${baseUrl}/products/?category=${category_id}&page=${currentPage}`);
+    fetchData(`${BASE_URL}/products/?category=${category_id}&page=${currentPage}`);
   }, [category_id, currentPage]);
 
   function fetchData(url) {

@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import {useState} from "react";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function Register() {
@@ -24,7 +25,7 @@ function Register() {
     });
   };
 const submitHandler = (event) => {
-  event.preventDefault(); // Prevent default form submission
+  event.preventDefault();
   const formData = new FormData();
   formData.append('first_name', registerFormData.first_name);
   formData.append('last_name', registerFormData.last_name);
@@ -33,7 +34,7 @@ const submitHandler = (event) => {
   formData.append('password', registerFormData.password);
   formData.append('mobile', registerFormData.mobile);
 
-  axios.post(`${baseUrl}customer/register/`, formData)
+  axios.post(`${BASE_URL}/customer/register/`, formData)
     .then(function (response) {
       if (response.data.bool === false) {
         setFormError(true);

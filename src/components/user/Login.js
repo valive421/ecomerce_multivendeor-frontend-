@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import {useState, useContext} from "react";
-import { UserContext } from '../context';
+import { UserContext, BASE_URL } from '../context';
 import './liquidGlass.css';
 
 function CustomerLogin(props){
@@ -27,7 +27,7 @@ function CustomerLogin(props){
             formData.append('password',loginFormData.password);
 
             //SUBMIT DATA
-            axios.post(baseUrl+'customer/login/',formData)
+            axios.post(`${BASE_URL}/customer/login/`,formData)
             .then(function (response){
                 if(response.data.bool==false){
                     setFormError(true);

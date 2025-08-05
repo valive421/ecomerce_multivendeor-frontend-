@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Sidebar from "../common/Sidebar";
 import './liquidGlass.css';
+import { BASE_URL } from "../context";
 
 function Profile() {
   const [profile, setProfile] = useState({
@@ -60,22 +61,19 @@ function Profile() {
     formData.append("username", profile.username);
     formData.append("mobile", profile.mobile);
 
-    // If a new profile picture is selected (base64), upload it
     if (fileInputRef.current && fileInputRef.current.files[0]) {
       formData.append("image", fileInputRef.current.files[0]);
     }
 
     // Update user info (PATCH to /api/customer/<id>/)
-    fetch(`http://127.0.0.1:8000/api/customer/${customerid}/`, {
+    fetch(`${BASE_URL}/customer/${customerid}/`, {
       method: "PATCH",
       body: formData,
     })
       .then(res => res.json())
       .then(data => {
-        // Optionally, update UI with new data
         setEdit(false);
-        // Refetch profile to update UI with backend changes (including new profile pic)
-        fetch(`http://127.0.0.1:8000/api/customer/${customerid}/`)
+        fetch(`${BASE_URL}/customer/${customerid}/`)
           .then(res => res.json())
           .then(data => {
             setProfile({
@@ -159,4 +157,6 @@ function Profile() {
 }
 
 export default Profile;
+
+
 

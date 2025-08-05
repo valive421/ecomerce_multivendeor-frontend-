@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SellerSidebar from "./SellerSidebar";
+import { BASE_URL } from "../context";
 
 function SellerChangePassword() {
   const [oldPassword, setOldPassword] = useState("");
@@ -23,7 +24,7 @@ function SellerChangePassword() {
       return;
     }
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/vendor/change-password/", {
+      const res = await fetch(`${BASE_URL}/vendor/change-password/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

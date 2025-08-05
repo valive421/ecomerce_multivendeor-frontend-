@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
 import SellerSidebar from "./SellerSidebar";
+import { BASE_URL } from "../context";
 import './liquidGlass.css';
 
 function SellerDashboard() {
@@ -18,17 +18,17 @@ function SellerDashboard() {
     if (!vendorId) return;
 
     // Fetch total products
-    fetch(`http://127.0.0.1:8000/api/products/?vendor=${vendorId}`)
+    fetch(`${BASE_URL}/products/?vendor=${vendorId}`)
       .then(res => res.json())
       .then(data => setStats(s => ({ ...s, totalProducts: data.count || (data.data ? data.data.length : 0) })));
 
     // Fetch total orders
-    fetch(`http://127.0.0.1:8000/api/vendor/${vendorId}/orderitems`)
+    fetch(`${BASE_URL}/vendor/${vendorId}/orderitems`)
       .then(res => res.json())
       .then(data => setStats(s => ({ ...s, totalOrders: data.count || (data.results ? data.results.length : 0) })));
 
     // Fetch total customers
-    fetch(`http://127.0.0.1:8000/api/vendor/${vendorId}/customers/`)
+    fetch(`${BASE_URL}/vendor/${vendorId}/customers/`)
       .then(res => res.json())
       .then(data => setStats(s => ({ ...s, totalCustomers: data.results ? data.results.length : 0 })));
   }, []);
